@@ -20,21 +20,32 @@ export const PLANS = [
 ] as const
 
 
-/* All services of the NiketDigital.ai tool — shown on the home page. */
-export const ALL_SERVICES: { title: string; desc: string; icon: string; grad: string; tint: string; target: View }[] = [
-  { title: 'AI Website Development', desc: 'Order a professional website for your trade — Home, Services, Gallery, Contact and more — with an AI design concept and a clear quotation first.', icon: 'globe', grad: 'from-sky-500 to-blue-700', tint: 'bg-sky-100 text-sky-700', target: 'website' },
-  { title: 'AI Marketing Assistant', desc: 'Facebook, Instagram and Google ad copy, headlines, keywords, landing-page content and local marketing ideas — generated in seconds.', icon: 'spark', grad: 'from-orange-500 to-amber-500', tint: 'bg-orange-100 text-orange-600', target: 'ai' },
-  { title: 'Meta Ads', desc: 'Connect your Facebook and Instagram ad account with official OAuth. Campaigns are created as drafts, paused by default.', icon: 'mega', grad: 'from-indigo-500 to-violet-600', tint: 'bg-indigo-100 text-indigo-700', target: 'meta' },
-  { title: 'Google Ads', desc: 'Connect Google Ads with official OAuth. Search campaigns stay as drafts until you review and approve them.', icon: 'target', grad: 'from-emerald-500 to-teal-600', tint: 'bg-emerald-100 text-emerald-700', target: 'google' },
-  { title: 'Campaign Management', desc: 'See all your campaign drafts in one place. Nothing is published, and no budget is changed, without your explicit confirmation.', icon: 'rocket', grad: 'from-rose-500 to-pink-600', tint: 'bg-rose-100 text-rose-700', target: 'campaigns' },
-  { title: 'Lead CRM', desc: 'Capture every lead and track it from New to Won — Contacted, Qualified, Estimate Scheduled, Proposal Sent — with CSV export.', icon: 'users', grad: 'from-[#0f2447] to-[#274e96]', tint: 'bg-slate-200 text-[#0f2447]', target: 'crm' },
-  { title: 'Analytics & Reporting', desc: 'Reports calculated only from your saved leads and connected ad accounts. No invented numbers — empty means no data yet.', icon: 'chart', grad: 'from-cyan-500 to-sky-600', tint: 'bg-cyan-100 text-cyan-700', target: 'analytics' },
-  { title: 'Stripe Billing', desc: 'Monthly or annual subscriptions — Starter $49, Growth $99, Professional $199, Agency $399 — paid securely through Stripe.', icon: 'card', grad: 'from-violet-500 to-purple-600', tint: 'bg-violet-100 text-violet-700', target: 'billing' },
-  { title: 'Integrations', desc: 'Connect Meta, Google Ads and Stripe with official OAuth. A connection is only shown as connected after a successful live check.', icon: 'link', grad: 'from-amber-500 to-orange-600', tint: 'bg-amber-100 text-amber-700', target: 'integrations' },
-  { title: 'Support Center', desc: 'Raise a support ticket from inside the app and the NiketDigital team will reply by email.', icon: 'headset', grad: 'from-teal-500 to-emerald-600', tint: 'bg-teal-100 text-teal-700', target: 'support' },
-  { title: 'AI Automation', desc: 'Automation workflows that save time on follow-ups and reporting — part of the Professional and Agency plans.', icon: 'gear', grad: 'from-slate-600 to-slate-800', tint: 'bg-slate-200 text-slate-700', target: 'ai' },
-  { title: 'Super-Admin Dashboard', desc: 'For the NiketDigital team — customers, subscriptions, orders, AI usage and audit logs, protected by an admin check.', icon: 'crown', grad: 'from-yellow-500 to-amber-600', tint: 'bg-yellow-100 text-yellow-700', target: 'admin' },
+/* All services of the NiketDigital.ai tool — shown on the home page.
+   Stripe Billing and Super-Admin are NOT listed here (they stay inside the
+   app only, in the Billing and Admin dashboard views). */
+const U = (id: string) => `https://images.unsplash.com/${id}?w=1200&q=80&auto=format&fit=crop`
+export const ALL_SERVICES: { title: string; desc: string; benefit: string; icon: string; grad: string; tint: string; img: string; target: View }[] = [
+  { title: 'AI Website Development', desc: 'Order a professional website for your trade — Home, Services, Gallery, Contact and more — with an AI design concept and a clear quotation first.', benefit: 'A fast, professional website that turns visitors into estimate requests.', icon: 'globe', grad: 'from-sky-500 to-blue-700', tint: 'bg-sky-100 text-sky-700', img: U('photo-1600585154340-be6161a56a0c'), target: 'website' },
+  { title: 'AI Marketing Assistant', desc: 'Facebook, Instagram and Google ad copy, headlines, keywords, landing-page content and local marketing ideas — generated in seconds.', benefit: 'Hours of writing done in minutes, in your trade’s language.', icon: 'spark', grad: 'from-orange-500 to-amber-500', tint: 'bg-orange-100 text-orange-600', img: U('photo-1556761175-b413da4baf72'), target: 'ai' },
+  { title: 'Meta Ads', desc: 'Connect your Facebook and Instagram ad account with official OAuth. Campaigns are created as drafts, paused by default.', benefit: 'Reach homeowners on Facebook and Instagram in the areas you serve.', icon: 'mega', grad: 'from-indigo-500 to-violet-600', tint: 'bg-indigo-100 text-indigo-700', img: U('photo-1522071820081-009f0129c71c'), target: 'meta' },
+  { title: 'Google Ads', desc: 'Connect Google Ads with official OAuth. Search campaigns stay as drafts until you review and approve them.', benefit: 'Show up first when someone searches for your service near them.', icon: 'target', grad: 'from-emerald-500 to-teal-600', tint: 'bg-emerald-100 text-emerald-700', img: U('photo-1581094794329-c8112a89af12'), target: 'google' },
+  { title: 'Campaign Management', desc: 'See all your campaign drafts in one place. Nothing is published, and no budget is changed, without your explicit confirmation.', benefit: 'Every campaign, draft and budget in one clear place — no surprises.', icon: 'rocket', grad: 'from-rose-500 to-pink-600', tint: 'bg-rose-100 text-rose-700', img: U('photo-1504307651254-35680f356dfd'), target: 'campaigns' },
+  { title: 'Lead CRM', desc: 'Capture every lead and track it from New to Won — Contacted, Qualified, Estimate Scheduled, Proposal Sent — with CSV export.', benefit: 'No lead is forgotten — follow up on time and win more jobs.', icon: 'users', grad: 'from-[#0f2447] to-[#274e96]', tint: 'bg-slate-200 text-[#0f2447]', img: U('photo-1521791136064-7986c2920216'), target: 'crm' },
+  { title: 'Analytics & Reporting', desc: 'Reports calculated only from your saved leads and connected ad accounts. No invented numbers — empty means no data yet.', benefit: 'See exactly where your leads and jobs come from, every month.', icon: 'chart', grad: 'from-cyan-500 to-sky-600', tint: 'bg-cyan-100 text-cyan-700', img: U('photo-1460925895917-afdab827c52f'), target: 'analytics' },
+  { title: 'Integrations', desc: 'Connect Meta, Google Ads and Stripe with official OAuth. A connection is only shown as connected after a successful live check.', benefit: 'Your ad accounts and payments connect securely, in a few clicks.', icon: 'link', grad: 'from-amber-500 to-orange-600', tint: 'bg-amber-100 text-amber-700', img: U('photo-1519389950473-47ba0277781c'), target: 'integrations' },
+  { title: 'Support Center', desc: 'Raise a support ticket from inside the app and the NiketDigital team will reply by email.', benefit: 'Help from a real team whenever you are stuck.', icon: 'headset', grad: 'from-teal-500 to-emerald-600', tint: 'bg-teal-100 text-teal-700', img: U('photo-1600880292203-757bb62b4baf'), target: 'support' },
+  { title: 'AI Automation', desc: 'Automation workflows that save time on follow-ups and reporting — part of the Professional and Agency plans.', benefit: 'Follow-ups and reports happen automatically while you work on site.', icon: 'gear', grad: 'from-slate-600 to-slate-800', tint: 'bg-slate-200 text-slate-700', img: U('photo-1497366216548-37526070297c'), target: 'ai' },
 ]
+/* Royalty-free industry photos (Unsplash, free to use). Verified to load. */
+export const INDUSTRY_IMAGES: Record<Industry, string> = {
+  'Roofing': U('photo-1632759145351-1d592919f522'),
+  'Home Remodeling': U('photo-1556911220-bff31c812dba'),
+  'Construction': U('photo-1541888946425-d81bb19240f5'),
+  'Pest Control': U('photo-1600607687939-ce8a6c25118c'),
+}
+export const HERO_IMAGE = U('photo-1600585154340-be6161a56a0c')
+export const WHATSAPP_NUMBER = '918141402701'
+export const CONTACT_EMAIL = 'niketdigital@gmail.com'
 /* Sample reviews only — replace with real customer quotes. No real customers are named here. */
 export const SAMPLE_REVIEWS: { name: string; role: string; quote: string }[] = [
   { name: 'Mike', role: 'Roofing contractor', quote: 'The website and the lead list are finally in one place. I can see every enquiry, from the first call to the booked job.' },
@@ -125,6 +136,8 @@ const ICONS = {
   doc: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-2 2v6h6M9 13h6m-6 4h6',
   mail: 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm2 4 8 6 8-6',
   star: 'M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z',
+  whatsapp: 'M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 21l2-5.6A8.5 8.5 0 1 1 21 11.5Z',
+  phone: 'M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.13.96.36 1.9.7 2.8a2 2 0 0 1-.45 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.45c.9.34 1.84.57 2.8.7A2 2 0 0 1 22 16.9Z',
 }
 function Input({ label, value, onChange, type = 'text', placeholder = '', required = false }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string; required?: boolean }) {
   return <label className="block text-sm font-medium text-slate-700">{label}<input required={required} type={type} value={value} placeholder={placeholder} onChange={e => onChange(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100" /></label>
@@ -138,7 +151,7 @@ function SiteFooter({ go, openIndustry }: { go: (v: View) => void; openIndustry:
   const link = 'block py-1 text-sm text-slate-400 transition hover:text-white'
   return <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300">
     <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-      <div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-2 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p><p className="mt-2 text-sm text-slate-400">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for US roofing, remodeling, construction and pest control businesses.</p></div>
+      <div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-2 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p><p className="mt-2 text-sm text-slate-400">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for US roofing, remodeling, construction and pest control businesses.</p><p className="mt-3 text-sm text-slate-400">Vadodara, Gujarat, India</p><p className="mt-1 text-sm"><a className="text-slate-300 hover:text-white" href="mailto:niketdigital@gmail.com">niketdigital@gmail.com</a></p><p className="mt-1 text-sm"><a className="text-slate-300 hover:text-white" href="https://wa.me/918141402701" target="_blank" rel="noreferrer">WhatsApp: +91 81414 02701</a></p></div>
       <div><p className="font-bold text-white">Company</p><div className="mt-2"><button className={link} onClick={() => go('landing')}>Home</button><button className={link} onClick={() => go('about')}>About Us</button><button className={link} onClick={() => go('contact')}>Contact Us</button><button className={link} onClick={() => go('auth')}>Sign in</button><button className={link} onClick={() => go('auth')}>Start free trial</button></div></div>
       <div><p className="font-bold text-white">Industries</p><div className="mt-2">{INDUSTRIES.map(i => <button key={i} className={link} onClick={() => openIndustry(i)}>{i}</button>)}</div><p className="mt-4 font-bold text-white">Services</p><div className="mt-2">{ALL_SERVICES.slice(0, 5).map(sv => <button key={sv.title} className={link} onClick={() => go('landing')}>{sv.title}</button>)}</div></div>
       <div><p className="font-bold text-white">Legal</p><div className="mt-2"><button className={link} onClick={() => go('privacy')}>Privacy Policy</button><button className={link} onClick={() => go('terms')}>Terms of Service</button><button className={link} onClick={() => go('billing')}>Pricing — from $49/mo</button></div><p className="mt-4 text-sm text-slate-400">Questions? Sign in and raise a ticket in the Support Center inside the app.</p></div>
@@ -159,6 +172,18 @@ export default function App() {
   const [billingAnnual, setBillingAnnual] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState('growth')
   const [contactName, setContactName] = useState(''); const [contactEmail, setContactEmail] = useState(''); const [contactMsgText, setContactMsgText] = useState(''); const [contactSent, setContactSent] = useState('')
+  const [contactBusiness, setContactBusiness] = useState(''); const [contactPhone, setContactPhone] = useState(''); const [contactService, setContactService] = useState(ALL_SERVICES[0].title)
+  const goSection = (id: string) => { setView('landing'); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 60) }
+  const goHome = () => { setView('landing'); setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 60) }
+  const openWhatsApp = (message: string) => { window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank') }
+
+  useEffect(() => {
+    document.title = 'NiketDigital.ai — AI-Powered Business Growth Partner for Roofing, Remodeling, Construction & Pest Control'
+    const meta = document.querySelector('meta[name="description"]') || document.createElement('meta')
+    meta.setAttribute('name', 'description')
+    meta.setAttribute('content', 'NiketDigital.ai helps roofing, remodeling, construction and pest control businesses grow with AI-powered website development, digital advertising and lead generation.')
+    if (!meta.parentElement) document.head.appendChild(meta)
+  }, [])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { if (data.session?.user) { setUser({ id: data.session.user.id, email: data.session.user.email }); setView(v => v === 'landing' ? 'onboarding' : v) } })
@@ -190,37 +215,45 @@ export default function App() {
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-2"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] text-lg font-black text-orange-400">N</span><span><span className="block text-xl font-black leading-none text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><span className="text-[11px] text-slate-500">Your AI-Powered Business Growth Partner</span></span></div>
-          <nav className="flex flex-wrap gap-1 text-sm font-medium text-slate-600">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-slate-100 px-3 py-1 transition hover:bg-orange-100 hover:text-orange-700">{INDUSTRY_DETAILS[i].short}</button>)}</nav>
+          <nav className="flex flex-wrap items-center gap-1 text-sm font-semibold text-slate-600" aria-label="Main menu">
+            <button onClick={goHome} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Home</button>
+            <button onClick={() => goSection('services')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Services</button>
+            <button onClick={() => goSection('pricing')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Pricing</button>
+            <button onClick={() => setView('contact')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Contact Us</button>
+          </nav>
           <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 pb-16">
-        <section className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1a33] via-[#0f2447] to-[#274e96] px-6 py-12 text-white shadow-xl sm:px-10 lg:py-16">
+        <section id="top" className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1a33] via-[#0f2447] to-[#274e96] px-6 py-12 text-white shadow-xl sm:px-10 lg:py-16">
           <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-orange-500/25 blur-3xl" /><div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-sky-400/20 blur-3xl" />
           <div className="relative grid items-center gap-10 lg:grid-cols-2">
             <div>
-              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-orange-300 ring-1 ring-white/20"><Icon d={ICONS.spark} cls="h-3.5 w-3.5" /> Built for US contractors</p>
-              <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Grow your contracting business <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">with AI.</span></h1>
-              <p className="mt-4 max-w-xl text-slate-300">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for roofing, remodeling, construction and pest control businesses in the United States.</p>
+              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-orange-300 ring-1 ring-white/20"><Icon d={ICONS.spark} cls="h-3.5 w-3.5" /> AI-powered growth for US contractors</p>
+              <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Grow Your Business <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">with AI.</span></h1>
+              <p className="mt-4 max-w-xl text-slate-300">NiketDigital.ai helps roofing, remodeling, construction and pest control businesses grow through AI-powered website development, digital advertising and lead generation — more enquiries, more booked jobs, less wasted time.</p>
               <div className="mt-4 flex flex-wrap items-center gap-2 text-xs"><span className="font-bold text-slate-300">Explore:</span>{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-white/10 px-3 py-1.5 font-bold text-white ring-1 ring-white/20 transition hover:bg-orange-500">{INDUSTRY_DETAILS[i].short}</button>)}</div>
-              <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('billing')}>See plans — from $49/mo</Btn></div>
+              <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('contact')}>Get a Free Consultation</Btn><Btn variant="outline" onClick={() => setView('auth')}>Grow Your Business with AI</Btn></div>
               <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold text-slate-200"><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.check} cls="h-3.5 w-3.5 text-emerald-400" /> No card charged without your approval</span><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.shield} cls="h-3.5 w-3.5 text-emerald-400" /> Ads paused until you approve</span><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.users} cls="h-3.5 w-3.5 text-sky-300" /> One business per account</span></div>
             </div>
-            <div className="rounded-2xl bg-white p-5 text-slate-800 shadow-2xl">
+            <div>
+              <img src={HERO_IMAGE} alt="Modern home — a professional website and AI marketing for roofing, remodeling, construction and pest control businesses" loading="lazy" onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} className="h-56 w-full rounded-2xl object-cover shadow-2xl sm:h-64" />
+              <div className="mt-4 rounded-2xl bg-white p-5 text-slate-800 shadow-2xl">
               <div className="flex items-center justify-between"><p className="font-bold text-[#0f2447]">Your dashboard — preview</p><span className="flex gap-1"><span className="h-2.5 w-2.5 rounded-full bg-red-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></span></div>
               <p className="mt-1 text-xs text-slate-500">Example layout only — your real numbers appear here after you add leads and orders.</p>
               <div className="mt-4 grid grid-cols-3 gap-3 text-center">{[['Total leads', 'bg-[#0f2447]'], ['Won', 'bg-emerald-600'], ['Pipeline', 'bg-orange-500']].map(([l, c]) => <div key={l} className={`rounded-xl ${c} px-2 py-3 text-white`}><p className="text-lg font-black">—</p><p className="text-[11px] font-medium opacity-90">{l}</p></div>)}</div>
               <div className="mt-4 space-y-3">{[['New leads', 'w-3/4 bg-orange-500'], ['Contacted', 'w-1/2 bg-[#274e96]'], ['Won', 'w-1/3 bg-emerald-500']].map(([l, c]) => <div key={l}><div className="flex justify-between text-xs font-semibold text-slate-600"><span>{l}</span><span>Preview</span></div><div className="mt-1 h-2.5 rounded-full bg-slate-100"><div className={`h-2.5 rounded-full ${c}`} /></div></div>)}</div>
               <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-600"><Icon d={ICONS.rocket} cls="h-4 w-4 text-orange-500" /> Website order → Quotation → In Development → Published</div>
             </div>
+            </div>
           </div>
         </section>
-        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">All services — everything included</h2><p className="mt-1 text-center text-sm text-slate-500">One platform — website, marketing, ads and leads, in one place. Click a service to open it after signing in.</p>
+        <section id="services" className="mt-10 scroll-mt-24"><h2 className="text-center text-2xl font-black text-[#0f2447]">All services — everything included</h2><p className="mt-1 text-center text-sm text-slate-500">One platform — website, marketing, ads and leads, in one place. Click a service to open it after signing in.</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {ALL_SERVICES.map(sv => (
               <div key={sv.title} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div className={`relative flex h-28 items-center justify-center bg-gradient-to-br ${sv.grad} text-white`}><span className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/15" /><span className="pointer-events-none absolute -bottom-6 -left-4 h-20 w-20 rounded-full bg-white/10" /><span className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30"><Icon d={ICONS[sv.icon as keyof typeof ICONS]} cls="h-8 w-8" /></span></div>
-                <div className="p-5"><h3 className="font-bold text-[#0f2447]">{sv.title}</h3><p className="mt-2 text-sm leading-relaxed text-slate-600">{sv.desc}</p><button onClick={() => setView('auth')} className="mt-3 text-sm font-bold text-orange-600 hover:text-orange-500">Open {sv.title} →</button></div>
+                <div className="relative h-40 overflow-hidden"><img src={sv.img} alt={`${sv.title} — NiketDigital.ai`} loading="lazy" onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} className="h-full w-full object-cover transition duration-500 hover:scale-105" /><div className={`absolute inset-0 bg-gradient-to-t ${sv.grad} opacity-25`} /><span className="absolute bottom-3 left-3 flex h-11 w-11 items-center justify-center rounded-xl bg-white/95 text-[#0f2447] shadow"><Icon d={ICONS[sv.icon as keyof typeof ICONS]} cls="h-6 w-6" /></span></div>
+                <div className="p-5"><h3 className="font-bold text-[#0f2447]">{sv.title}</h3><p className="mt-2 text-sm leading-relaxed text-slate-600">{sv.desc}</p><p className="mt-2 flex gap-1.5 text-sm font-semibold text-emerald-700"><Icon d={ICONS.check} cls="mt-0.5 h-4 w-4 shrink-0" />{sv.benefit}</p><button onClick={() => setView('auth')} className="mt-3 text-sm font-bold text-orange-600 hover:text-orange-500">Open {sv.title} →</button></div>
               </div>
             ))}
           </div>
@@ -229,8 +262,8 @@ export default function App() {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {INDUSTRIES.map(i => (
               <button key={i} onClick={() => openIndustry(i)} className="overflow-hidden rounded-2xl text-left shadow-md transition hover:-translate-y-1 hover:shadow-lg">
-                <div className={`flex h-24 items-center gap-3 bg-gradient-to-br ${INDUSTRY_DETAILS[i].gradient} px-4 text-white`}><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/30"><Icon d={ICONS[INDUSTRY_DETAILS[i].icon as keyof typeof ICONS]} /></span><span><span className="block font-black">{INDUSTRY_DETAILS[i].short}</span><span className="text-xs text-slate-200">{INDUSTRY_DETAILS[i].tagline}</span></span></div>
-                <div className="bg-white px-4 py-3 text-sm font-bold text-[#0f2447]">View {INDUSTRY_DETAILS[i].short} services →</div>
+                <div className="relative h-36 overflow-hidden"><img src={INDUSTRY_IMAGES[i]} alt={`${INDUSTRY_DETAILS[i].short} — NiketDigital.ai`} loading="lazy" onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} className="h-full w-full object-cover transition duration-500 hover:scale-105" /><div className={`absolute inset-0 bg-gradient-to-t ${INDUSTRY_DETAILS[i].gradient} opacity-60`} /><span className="absolute bottom-3 left-3 flex items-center gap-2 text-white"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/40 backdrop-blur-sm"><Icon d={ICONS[INDUSTRY_DETAILS[i].icon as keyof typeof ICONS]} cls="h-5 w-5" /></span><span className="font-black drop-shadow">{INDUSTRY_DETAILS[i].short}</span></span></div>
+                <div className="bg-white px-4 py-3"><p className="text-sm text-slate-600">{INDUSTRY_DETAILS[i].tagline}</p><p className="mt-1 text-sm font-bold text-[#0f2447]">View {INDUSTRY_DETAILS[i].short} services →</p></div>
               </button>
             ))}
           </div>
@@ -251,10 +284,17 @@ export default function App() {
             <div key={t} className="text-center"><span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-amber-400 text-lg font-black text-white shadow-md shadow-orange-500/30">{n}</span><h3 className="mt-3 font-bold text-[#0f2447]">{t}</h3><p className="mt-1 text-sm text-slate-600">{d}</p></div>
           ))}</div>
         </section>
-        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">Simple pricing</h2><p className="mt-1 text-center text-sm text-slate-500">Website development is priced separately from the monthly subscription. Advertising budgets are billed separately by Meta / Google.</p>
+        <section id="pricing" className="mt-10 scroll-mt-24"><h2 className="text-center text-2xl font-black text-[#0f2447]">Simple pricing</h2><p className="mt-1 text-center text-sm text-slate-500">Website development is priced separately from the monthly subscription. Advertising budgets are billed separately by Meta / Google.</p>
           <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">{PLANS.map(p => <div key={p.id} className={`relative flex flex-col rounded-2xl border-2 bg-white p-5 shadow-sm transition hover:shadow-lg ${p.id === 'growth' ? 'border-orange-500 shadow-lg shadow-orange-500/20 lg:-translate-y-2' : 'border-slate-200'}`}>{p.id === 'growth' && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-orange-500 to-amber-400 px-3 py-1 text-xs font-black text-white shadow">MOST POPULAR</span>}<h3 className="font-bold text-[#0f2447]">{p.name}</h3><p className="mt-1 text-3xl font-black text-[#0f2447]">${p.monthly}<span className="text-sm font-normal text-slate-500">/mo</span></p><p className="text-xs text-slate-500">{p.leads} · {p.ai}</p><ul className="mt-3 flex-1 space-y-1.5 text-sm text-slate-600">{p.features.map(f => <li key={f} className="flex gap-2"><Icon d={ICONS.check} cls="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />{f}</li>)}</ul><Btn onClick={() => setView('auth')} variant={p.id === 'growth' ? 'primary' : 'outline'}>Choose {p.name}</Btn></div>)}</div></section>
         {!isSupabaseConfigured && <p className="mt-6 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Setup notice: Supabase is not configured yet in this deployment. Sign-up and saved data will work only after VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set. See README.md.</p>}
+        <section className="relative mt-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1a33] via-[#0f2447] to-[#274e96] px-6 py-10 text-center text-white shadow-xl sm:px-10">
+          <div className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-orange-500/25 blur-3xl" />
+          <h2 className="relative text-2xl font-black sm:text-3xl">Ready to grow your business with AI?</h2>
+          <p className="relative mx-auto mt-2 max-w-xl text-sm text-slate-300">Get a free consultation — tell us about your business and we will show you exactly how NiketDigital.ai can bring you more enquiries and booked jobs.</p>
+          <div className="relative mt-6 flex flex-wrap justify-center gap-3"><Btn onClick={() => setView('contact')}>Get a Free Consultation</Btn><Btn variant="outline" onClick={() => setView('auth')}>Grow Your Business with AI</Btn></div>
+        </section>
       </main>
+      <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hi NiketDigital.ai, I want a free consultation for my business.')}`} target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp" className="fixed bottom-5 right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl shadow-emerald-500/40 transition hover:scale-110"><Icon d={ICONS.whatsapp} cls="h-7 w-7" /></a>
       <SiteFooter go={(v) => setView(v)} openIndustry={openIndustry} />
     </div>
   )
@@ -275,7 +315,12 @@ export default function App() {
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <button onClick={() => setView('landing')} className="flex items-center gap-2 text-left"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] text-lg font-black text-orange-400">N</span><span><span className="block text-xl font-black leading-none text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><span className="text-[11px] text-slate-500">Your AI-Powered Business Growth Partner</span></span></button>
-          <nav className="flex flex-wrap gap-1 text-sm font-medium text-slate-600">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-slate-100 px-3 py-1 transition hover:bg-orange-100 hover:text-orange-700">{INDUSTRY_DETAILS[i].short}</button>)}</nav>
+          <nav className="flex flex-wrap items-center gap-1 text-sm font-semibold text-slate-600" aria-label="Main menu">
+            <button onClick={goHome} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Home</button>
+            <button onClick={() => goSection('services')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Services</button>
+            <button onClick={() => goSection('pricing')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Pricing</button>
+            <button onClick={() => setView('contact')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Contact Us</button>
+          </nav>
           <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
         </div>
       </header>
@@ -305,13 +350,22 @@ export default function App() {
             <p><strong>Fair use.</strong> AI generations and leads are limited by your plan. Do not use the platform for unlawful, misleading or harmful content. We may suspend accounts that break these terms.</p>
           </div>}
           {view === 'contact' && <div className="mt-4">
-            <p className="text-sm leading-relaxed text-slate-700">The fastest way to reach us is the <strong>Support Center inside the app</strong> — sign in, open Support Center, and raise a ticket. The team will reply by email.</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-700">You can also use the form below to write your message, then send it through the Support Center after signing in. We do not publish a phone number or email address on this page.</p>
-            <form onSubmit={e => { e.preventDefault(); setContactSent('Thanks — your message is ready. Please sign in and send it through the Support Center, and the team will reply by email.') }} className="mt-4 space-y-3">
-              <Input label="Your name" value={contactName} onChange={setContactName} required />
-              <Input label="Your email" type="email" value={contactEmail} onChange={setContactEmail} required />
-              <label className="block text-sm font-medium text-slate-700">Message<textarea value={contactMsgText} onChange={e => setContactMsgText(e.target.value)} required rows={4} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></label>
-              <Btn type="submit">Prepare message</Btn>
+            <div className="grid gap-3 rounded-2xl bg-gradient-to-br from-[#0f2447] to-[#274e96] p-5 text-white shadow-md sm:grid-cols-2">
+              <div><p className="text-xs font-bold uppercase tracking-wider text-orange-300">Business</p><p className="mt-1 font-black">NiketDigital.ai</p><p className="mt-3 text-xs font-bold uppercase tracking-wider text-orange-300">Address</p><p className="mt-1 text-sm">Vadodara, Gujarat, India</p></div>
+              <div><p className="text-xs font-bold uppercase tracking-wider text-orange-300">Email</p><p className="mt-1 text-sm"><a className="font-semibold underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p><p className="mt-3 text-xs font-bold uppercase tracking-wider text-orange-300">WhatsApp</p><p className="mt-1 text-sm"><a className="font-semibold underline" href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer">+91 81414 02701</a></p></div>
+            </div>
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hi NiketDigital.ai, I want a free consultation for my business.')}`} target="_blank" rel="noreferrer" className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-3 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:bg-[#1eb856]"><Icon d={ICONS.whatsapp} cls="h-5 w-5" /> Chat on WhatsApp — replies fastest</a>
+            <p className="mt-4 text-sm leading-relaxed text-slate-700">Fill in the form below and it will open WhatsApp with your message ready to send. Or write to us at <a className="font-semibold text-orange-600" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+            <form onSubmit={e => { e.preventDefault(); const lines = [`Hi NiketDigital.ai, I would like a free consultation.`, ``, `Name: ${contactName}`, `Business: ${contactBusiness}`, `Email: ${contactEmail}`, `Phone: ${contactPhone}`, `Service: ${contactService}`, ``, `Message: ${contactMsgText}`]; openWhatsApp(lines.join('\n')); setContactSent('Thanks — WhatsApp has opened with your message ready. Just press Send there, and we will reply as soon as possible.') }} className="mt-4 space-y-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input label="Full Name" value={contactName} onChange={setContactName} required />
+                <Input label="Business Name" value={contactBusiness} onChange={setContactBusiness} required />
+                <Input label="Email Address" type="email" value={contactEmail} onChange={setContactEmail} required />
+                <Input label="Phone Number" type="tel" value={contactPhone} onChange={setContactPhone} required />
+              </div>
+              <label className="block text-sm font-medium text-slate-700">Select a Service<select value={contactService} onChange={e => setContactService(e.target.value)} required className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100">{ALL_SERVICES.map(sv => <option key={sv.title} value={sv.title}>{sv.title}</option>)}<option value="Other / Not sure yet">Other / Not sure yet</option></select></label>
+              <label className="block text-sm font-medium text-slate-700">Message<textarea value={contactMsgText} onChange={e => setContactMsgText(e.target.value)} required rows={4} placeholder="Tell us about your business and what you need help with…" className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></label>
+              <Btn type="submit">Send via WhatsApp</Btn>
             </form>
             {contactSent && <p className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{contactSent}</p>}
           </div>}
@@ -350,7 +404,7 @@ export default function App() {
             <div className="rounded-2xl bg-white p-5 text-slate-800 shadow-2xl">
               <div className="flex items-center justify-between"><p className="font-bold text-[#0f2447]">Your {d.short.toLowerCase()} website — preview</p><span className="flex gap-1"><span className="h-2.5 w-2.5 rounded-full bg-red-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></span></div>
               <p className="mt-1 text-xs text-slate-500">Example layout only — your real website is built after your quotation is approved.</p>
-              <div className="mt-4 rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] px-4 py-5 text-white"><p className="text-lg font-black">Your {d.short} Business</p><p className="text-xs text-slate-300">{d.tagline}</p><span className="mt-3 inline-block rounded-lg bg-orange-500 px-3 py-1.5 text-xs font-bold">Get a free estimate</span></div>
+              <div className="relative mt-4 overflow-hidden rounded-xl"><img src={INDUSTRY_IMAGES[industry]} alt={`${d.short} — NiketDigital.ai`} loading="lazy" onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} className="h-44 w-full object-cover" /><div className={`absolute inset-0 bg-gradient-to-t ${d.gradient} opacity-40`} /><div className="absolute bottom-3 left-3 text-white"><p className="text-lg font-black drop-shadow">Your {d.short} Business</p><p className="text-xs text-slate-100 drop-shadow">{d.tagline}</p></div><span className="absolute right-3 top-3 rounded-lg bg-orange-500 px-3 py-1.5 text-xs font-bold text-white shadow">Get a free estimate</span></div>
               <div className="mt-3 flex flex-wrap gap-1.5">{d.pages.map(pg => <span key={pg} className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">{pg}</span>)}</div>
               <div className="mt-3 space-y-2">{d.services.slice(0, 3).map(([name]) => <div key={name} className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700"><Icon d={ICONS.check} cls="h-4 w-4 shrink-0 text-emerald-500" />{name}</div>)}</div>
             </div>
