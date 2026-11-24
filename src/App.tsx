@@ -551,11 +551,73 @@ function IntegrationPanel({ provider, statusPath, connectPath, api }: { provider
 }
 
 function Campaigns({ api }: { api: (p: string, b?: unknown) => Promise<any> }) {
-  const [out, setOut] = useState('')
-  return <Card title="Campaign drafts" sub="All campaigns are created PAUSED / draft by default. Publishing or changing a budget needs your explicit confirmation — the API enforces this.">
-    <div className="flex flex-wrap gap-2"><Btn onClick={async () => setOut(JSON.stringify(await api('/api/meta/campaigns', { action: 'list' }), null, 2))}>List Meta campaigns</Btn><Btn variant="outline" onClick={async () => setOut(JSON.stringify(await api('/api/google-ads/campaigns', { action: 'list' }), null, 2))}>List Google Ads campaigns</Btn></div>
-    <p className="mt-3 text-sm text-slate-600">To create a campaign, first generate a draft in the AI Marketing Assistant, review it, then confirm publishing here. The create endpoints reject any request that does not include <code>confirmPublish: true</code> and a paused status.</p>
-    {out && <pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-900 p-4 text-xs text-slate-100">{out}</pre>}</Card>
+  const [accounts, setAccounts] = useState<{ id: string; name: string; currency: string | null; accountStatus: number }[]>([])
+  const [accountsMsg, setAccountsMsg] = useState('Loading your Meta ad accounts…')
+  const [accountId, setAccountId] = useState('')
+  const [name, setName] = useState('')
+  const [objective, setObjective] = useState('Leads')
+  const [budget, setBudget] = useState('500')
+  const [drafts, setDrafts] = useState<any[]>([])
+  const [msg, setMsg] = useState('')
+  const [busy, setBusy] = useState(false)
+  async function loadAccounts() {
+    setAccountsMsg('Loading your Meta ad accounts…')
+    const { data } = await supabase.auth.getSession()
+    const token = data.session?.access_token || ''
+    if (!token) { setAccountsMsg('Sign in first, then refresh.'); return }
+    try {
+      const r = await fetch(`/api/meta/ad-accounts?access_token=${encodeURIComponent(token)}`)
+      const j = await r.json()
+      if (j.error) { setAccountsMsg(`Could not load ad accounts: ${j.error}`); return }
+      if (!j.connected) { setAccountsMsg('Meta is not connected. Connect it in Integrations first.'); return }
+      setAccounts(j.accounts || [])
+      if ((j.accounts || []).length) { setAccountId(j.accounts[0].id); setAccountsMsg('') }
+      else setAccountsMsg('No ad accounts found on this Meta login. Check in Ads Manager that this Facebook user has access to an ad account, then refresh.')
+    } catch { setAccountsMsg('Could not reach the server. Try refresh.') }
+  }
+  useEffect(() => { loadAccounts() }, [])
+  async function loadDrafts() {
+    const j = await api('/api/meta/campaigns', { action: 'list' })
+    if (j.error) { setMsg(`Could not list drafts: ${j.error}`); return }
+    setDrafts(j.campaigns || [])
+  }
+  useEffect(() => { loadDrafts() }, [])
+  async function createDraft(e: React.FormEvent) {
+    e.preventDefault(); setMsg(''); setBusy(true)
+    if (!accountId) { setMsg('Pick an ad account first.'); setBusy(false); return }
+    if (!name.trim()) { setMsg('Give the campaign a name.'); setBusy(false); return }
+    const j = await api('/api/meta/campaigns', { action: 'create', name: name.trim(), objective, ad_account_id: accountId, budget_cents: Math.round(Number(budget || '0') * 100) })
+    setBusy(false)
+    if (j.error) { setMsg(`Could not create the draft: ${j.error}`); return }
+    setMsg(`Draft created as PAUSED: ${j.campaign?.name || name}. It will not run or spend until you approve publishing — and the live Meta publish runs only after Meta Marketing API approval (see the note below).`)
+    setName(''); loadDrafts()
+  }
+  async function approvePublish(id: string) {
+    if (!window.confirm('Approve this draft for publishing? It stays paused in Meta until the live publish step is enabled after Meta Marketing API approval.')) return
+    const j = await api('/api/meta/campaigns', { action: 'publish', campaign_id: id, confirmPublish: true, approvedByCustomer: true })
+    setMsg(j.error ? `Could not approve: ${j.error}` : (j.note || 'Publishing approved and recorded.'))
+    loadDrafts()
+  }
+  return <>
+    <Card title="1 — Pick your Meta ad account" sub="These come live from the Meta account you just connected.">
+      {accountsMsg ? <p className="text-sm text-slate-600">{accountsMsg}</p> : <label className="block text-sm font-medium text-slate-700">Ad account<select value={accountId} onChange={e => setAccountId(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100">{accounts.map(a => <option key={a.id} value={a.id}>{a.name} — {a.id}{a.currency ? ` (${a.currency})` : ''}</option>)}</select></label>}
+      <div className="mt-3"><Btn variant="outline" onClick={loadAccounts}>Refresh ad accounts</Btn></div>
+    </Card>
+    <Card title="2 — Create a campaign draft" sub="Drafts are always created PAUSED. Nothing runs or spends until you approve it.">
+      <form onSubmit={createDraft} className="grid gap-3 sm:grid-cols-2">
+        <Input label="Campaign name" value={name} onChange={setName} placeholder="e.g. Roof replacement leads — Dallas" required />
+        <label className="block text-sm font-medium text-slate-700">Objective<select value={objective} onChange={e => setObjective(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100">{['Leads', 'Sales', 'Traffic', 'Engagement', 'Awareness'].map(o => <option key={o}>{o}</option>)}</select></label>
+        <Input label="Monthly budget (USD)" type="number" value={budget} onChange={setBudget} placeholder="500" />
+        <div className="flex items-end"><Btn type="submit" disabled={busy}>{busy ? 'Creating…' : 'Create paused draft'}</Btn></div>
+      </form>
+      <p className="mt-3 text-sm text-slate-600">Tip: generate the ad text first in the <strong>AI Marketing Assistant</strong>, then use it when you build the live ad. To make a draft live in Ads Manager today, copy the draft details into Ads Manager and publish there — the in-app live publish is enabled after Meta Marketing API approval.</p>
+    </Card>
+    <Card title="3 — Your campaign drafts" sub="Approve a draft here when you are ready. Approving records your permission; the live Meta publish call is the next step after Meta approval.">
+      <div className="mb-3 flex flex-wrap gap-2"><Btn variant="outline" onClick={loadDrafts}>Refresh drafts</Btn></div>
+      {drafts.length ? <ul className="space-y-2">{drafts.map(d => <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span><strong>{d.name}</strong> · {d.objective || '—'} · {d.status} · {d.budget_cents ? `$${(d.budget_cents / 100).toLocaleString()}/mo` : 'no budget'}{d.approved_to_publish ? ' · Approved to publish' : ''}</span>{!d.approved_to_publish && <Btn variant="outline" onClick={() => approvePublish(d.id)}>Approve to publish</Btn>}</li>)}</ul> : <Empty text="No drafts yet. Create your first paused draft above." />}
+      {msg && <p className="mt-3 text-sm text-slate-700">{msg}</p>}
+    </Card>
+  </>
 }
 
 function Crm({ leads, setLeads, user }: { leads: Lead[]; setLeads: (l: Lead[]) => void; user: { id: string; email?: string } | null }) {
