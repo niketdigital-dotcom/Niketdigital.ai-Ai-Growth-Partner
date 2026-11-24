@@ -16,12 +16,15 @@ async function startHandler(req: any, res: any) {
   // store a token against that user (fail-closed if no link exists).
   const user = await verifySupabaseUser(req)
   const state = randomBytes(32).toString('hex')
+  if (!user) console.error('[meta start] no signed-in user found (no valid token in header or ?access_token=); state will NOT be saved, callback will fail with reason=state')
   if (user) {
     try {
       const sb = getServiceClient()
       const { data: biz } = await sb.from('businesses').select('id').eq('owner_id', user.id).maybeSingle()
-      await sb.from('oauth_states').insert({ state_hash: hashState(state), business_id: (biz as any)?.id || null, user_id: user.id, provider: 'meta', kind: 'state', expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString() })
-    } catch { /* linkage failure: callback will fail closed */ }
+      const { error: insErr } = await sb.from('oauth_states').insert({ state_hash: hashState(state), business_id: (biz as any)?.id || null, user_id: user.id, provider: 'meta', kind: 'state', expires_at: new Date(Date.now() + 10 * 60 * 1000).toISOString() })
+      if (insErr) console.error('[meta start] oauth_states insert failed:', insErr.message)
+      else console.error('[meta start] state saved for user', user.id)
+    } catch (e: any) { console.error('[meta start] state save threw:', e?.message || e) }
   }
   const params = new URLSearchParams({ client_id: appId, redirect_uri: redirectUri, state, response_type: 'code' })
   const configId = process.env.META_CONFIG_ID
@@ -34,20 +37,20 @@ async function startHandler(req: any, res: any) {
 
 async function callbackHandler(req: any, res: any) {
   const q = getQuery(req)
-  if (q.error) return res.redirect(302, `${APP_URL}/?integration=meta&result=error`)
+  if (q.error) { console.error('[meta callback] Meta returned error:', q.error, q.error_description || ''); return res.redirect(302, `${APP_URL}/?integration=meta&result=error`) }
   const code = q.code || ''; const state = q.state || ''
-  if (!code || !state) return res.redirect(302, `${APP_URL}/?integration=meta&result=error`)
+  if (!code || !state) { console.error('[meta callback] missing code or state'); return res.redirect(302, `${APP_URL}/?integration=meta&result=error`) }
   const appId = process.env.META_APP_ID; const appSecret = process.env.META_APP_SECRET; const redirectUri = process.env.META_REDIRECT_URI
   if (!appId || !appSecret || !redirectUri) return res.status(503).send('Meta OAuth is not configured on the server.')
   try {
     const sb = getServiceClient()
     const { data: st } = await sb.from('oauth_states').select('business_id,user_id,expires_at').eq('state_hash', hashState(state)).eq('provider', 'meta').maybeSingle()
-    if (!st || new Date((st as any).expires_at).getTime() <= Date.now()) return res.redirect(302, `${APP_URL}/?integration=meta&result=error&reason=state`)
+    if (!st || new Date((st as any).expires_at).getTime() <= Date.now()) { console.error('[meta callback] state not found or expired'); return res.redirect(302, `${APP_URL}/?integration=meta&result=error&reason=state`) }
     await sb.from('oauth_states').delete().eq('state_hash', hashState(state))
     // Short-lived token -> long-lived token (Graph API v21.0).
     const tokenRes = await fetch(`https://graph.facebook.com/v21.0/oauth/access_token?client_id=${encodeURIComponent(appId)}&redirect_uri=${encodeURIComponent(redirectUri)}&client_secret=${encodeURIComponent(appSecret)}&code=${encodeURIComponent(code)}`)
     const tokenJson: any = await tokenRes.json()
-    if (!tokenRes.ok || !tokenJson.access_token) return res.redirect(302, `${APP_URL}/?integration=meta&result=error&reason=token`)
+    if (!tokenRes.ok || !tokenJson.access_token) { console.error('[meta callback] token exchange failed, status:', tokenRes.status, 'error:', tokenJson?.error?.message || ''); return res.redirect(302, `${APP_URL}/?integration=meta&result=error&reason=token`) }
     const longRes = await fetch(`https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${encodeURIComponent(appId)}&client_secret=${encodeURIComponent(appSecret)}&fb_exchange_token=${encodeURIComponent(tokenJson.access_token)}`)
     const longJson: any = await longRes.json()
     const accessToken = longJson.access_token || tokenJson.access_token
@@ -55,8 +58,9 @@ async function callbackHandler(req: any, res: any) {
     const meRes = await fetch(`https://graph.facebook.com/v21.0/me?access_token=${encodeURIComponent(accessToken)}`)
     const me: any = await meRes.json()
     await setIntegrationToken((st as any).business_id, (st as any).user_id, 'meta', { encryptedAccessToken: encryptToken(accessToken), tokenExpiresAt: expiresAt, scopes: 'ads_read,ads_management,business_management', externalUserId: me?.id ? String(me.id) : null })
+    console.error('[meta callback] connected for user', (st as any).user_id)
     return res.redirect(302, `${APP_URL}/?integration=meta&result=connected`)
-  } catch { return res.redirect(302, `${APP_URL}/?integration=meta&result=error`) }
+  } catch (e: any) { console.error('[meta callback] exception:', e?.message || e); return res.redirect(302, `${APP_URL}/?integration=meta&result=error`) }
 
 }
 
