@@ -34,16 +34,30 @@ const NAV: { id: View; label: string }[] = [
 ]
 
 function Card({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
-  return <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><h2 className="text-lg font-bold text-[#0f2447]">{title}</h2>{sub && <p className="mt-1 text-sm text-slate-500">{sub}</p>}<div className="mt-4">{children}</div></section>
+  return <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-md shadow-slate-200/60 transition-shadow hover:shadow-lg"><h2 className="border-l-4 border-orange-500 pl-3 text-lg font-bold text-[#0f2447]">{title}</h2>{sub && <p className="mt-1 pl-4 text-sm text-slate-500">{sub}</p>}<div className="mt-4">{children}</div></section>
+}
+/* Simple inline SVG icons — no emoji, no external images. */
+function Icon({ d, cls = 'h-6 w-6' }: { d: string; cls?: string }) {
+  return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>
+}
+const ICONS = {
+  globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm-9-9h18M12 3c2.5 2.6 3.9 5.7 3.9 9S14.5 18.4 12 21c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3Z',
+  spark: 'M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3Zm7 11l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6Z',
+  mega: 'M3 11l14-5v12L3 13v-2Zm14 0a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3M7 13v5a2 2 0 0 0 4 0v-4',
+  chart: 'M4 20V10m6 10V4m6 16v-7m4 7H2',
+  check: 'M20 6 9 17l-5-5',
+  users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm14 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
+  shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z',
+  rocket: 'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Zm12-12.5a9 9 0 0 1 6.5 6.5L12 21.5 3.5 13 14.5 2a9 9 0 0 1 2 2.5Zm-4 4 3 3',
 }
 function Input({ label, value, onChange, type = 'text', placeholder = '', required = false }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string; required?: boolean }) {
   return <label className="block text-sm font-medium text-slate-700">{label}<input required={required} type={type} value={value} placeholder={placeholder} onChange={e => onChange(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100" /></label>
 }
 function Btn({ children, onClick, variant = 'primary', type = 'button', disabled = false }: { children: React.ReactNode; onClick?: () => void; variant?: 'primary' | 'outline' | 'ghost'; type?: 'button' | 'submit'; disabled?: boolean }) {
-  const cls = variant === 'primary' ? 'bg-orange-500 text-white hover:bg-orange-600' : variant === 'outline' ? 'border border-[#0f2447] text-[#0f2447] hover:bg-slate-50' : 'text-slate-600 hover:bg-slate-100'
-  return <button type={type} disabled={disabled} onClick={onClick} className={`rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50 ${cls}`}>{children}</button>
+  const cls = variant === 'primary' ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/30 hover:from-orange-600 hover:to-orange-500' : variant === 'outline' ? 'border-2 border-[#0f2447] bg-white text-[#0f2447] hover:bg-slate-50' : 'text-slate-600 hover:bg-slate-100'
+  return <button type={type} disabled={disabled} onClick={onClick} className={`rounded-xl px-5 py-2.5 text-sm font-bold transition disabled:opacity-50 ${cls}`}>{children}</button>
 }
-function Empty({ text }: { text: string }) { return <p className="rounded-lg bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">{text}</p> }
+function Empty({ text }: { text: string }) { return <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">{text}</p> }
 
 export default function App() {
   const [view, setView] = useState<View>('landing')
@@ -81,29 +95,51 @@ export default function App() {
 
   // ---- Landing ----
   if (view === 'landing') return (
-    <div className="min-h-screen bg-white">
-      <header className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-        <div><span className="text-2xl font-black text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><p className="text-xs text-slate-500">Your AI-Powered Business Growth Partner</p></div>
-        <nav className="flex flex-wrap gap-2 text-sm font-medium text-slate-600"><span>For Roofing</span><span>· Remodeling</span><span>· Construction</span><span>· Pest Control</span></nav>
-        <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+    <div className="min-h-screen bg-slate-50">
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <div className="flex items-center gap-2"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] text-lg font-black text-orange-400">N</span><span><span className="block text-xl font-black leading-none text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><span className="text-[11px] text-slate-500">Your AI-Powered Business Growth Partner</span></span></div>
+          <nav className="hidden flex-wrap gap-1 text-sm font-medium text-slate-600 md:flex">{INDUSTRIES.map(i => <span key={i} className="rounded-full bg-slate-100 px-3 py-1">{i}</span>)}</nav>
+          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+        </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 pb-16">
-        <section className="rounded-3xl bg-[#0f2447] px-6 py-14 text-center text-white sm:px-12">
-          <h1 className="text-3xl font-black leading-tight sm:text-5xl">Grow your contracting business with AI.</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-slate-300">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for roofing, remodeling, construction and pest control businesses in the United States.</p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('billing')}>See plans — from $49/mo</Btn></div>
-          <p className="mt-4 text-xs text-slate-400">No card charged without your approval. Ads are created as drafts / paused by default and never published without your explicit confirmation.</p>
+        <section className="relative mt-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1a33] via-[#0f2447] to-[#274e96] px-6 py-12 text-white shadow-xl sm:px-10 lg:py-16">
+          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-orange-500/25 blur-3xl" /><div className="pointer-events-none absolute -bottom-20 -left-10 h-56 w-56 rounded-full bg-sky-400/20 blur-3xl" />
+          <div className="relative grid items-center gap-10 lg:grid-cols-2">
+            <div>
+              <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-orange-300 ring-1 ring-white/20"><Icon d={ICONS.spark} cls="h-3.5 w-3.5" /> Built for US contractors</p>
+              <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Grow your contracting business <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">with AI.</span></h1>
+              <p className="mt-4 max-w-xl text-slate-300">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for roofing, remodeling, construction and pest control businesses in the United States.</p>
+              <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('billing')}>See plans — from $49/mo</Btn></div>
+              <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold text-slate-200"><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.check} cls="h-3.5 w-3.5 text-emerald-400" /> No card charged without your approval</span><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.shield} cls="h-3.5 w-3.5 text-emerald-400" /> Ads paused until you approve</span><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.users} cls="h-3.5 w-3.5 text-sky-300" /> One business per account</span></div>
+            </div>
+            <div className="rounded-2xl bg-white p-5 text-slate-800 shadow-2xl">
+              <div className="flex items-center justify-between"><p className="font-bold text-[#0f2447]">Your dashboard — preview</p><span className="flex gap-1"><span className="h-2.5 w-2.5 rounded-full bg-red-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></span></div>
+              <p className="mt-1 text-xs text-slate-500">Example layout only — your real numbers appear here after you add leads and orders.</p>
+              <div className="mt-4 grid grid-cols-3 gap-3 text-center">{[['Total leads', 'bg-[#0f2447]'], ['Won', 'bg-emerald-600'], ['Pipeline', 'bg-orange-500']].map(([l, c]) => <div key={l} className={`rounded-xl ${c} px-2 py-3 text-white`}><p className="text-lg font-black">—</p><p className="text-[11px] font-medium opacity-90">{l}</p></div>)}</div>
+              <div className="mt-4 space-y-3">{[['New leads', 'w-3/4 bg-orange-500'], ['Contacted', 'w-1/2 bg-[#274e96]'], ['Won', 'w-1/3 bg-emerald-500']].map(([l, c]) => <div key={l}><div className="flex justify-between text-xs font-semibold text-slate-600"><span>{l}</span><span>Preview</span></div><div className="mt-1 h-2.5 rounded-full bg-slate-100"><div className={`h-2.5 rounded-full ${c}`} /></div></div>)}</div>
+              <div className="mt-4 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-xs text-slate-600"><Icon d={ICONS.rocket} cls="h-4 w-4 text-orange-500" /> Website order → Quotation → In Development → Published</div>
+            </div>
+          </div>
         </section>
-        <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[['AI Website Development', 'Order a professional website for your trade, with an AI-generated design concept and a clear quotation.'], ['AI Marketing Assistant', 'Facebook, Instagram and Google ad copy, keywords, landing pages and local marketing ideas.'], ['Meta & Google Ads', 'Connect your own ad accounts with official OAuth. Campaigns stay paused until you approve them.'], ['Lead CRM & Analytics', 'Track every lead from New to Won, follow up on time, and see real results — never invented numbers.']].map(([t, d]) => (
-            <div key={t} className="rounded-2xl border border-slate-200 p-5"><h3 className="font-bold text-[#0f2447]">{t}</h3><p className="mt-2 text-sm text-slate-600">{d}</p></div>
-          ))}
+        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">Everything you need to grow</h2><p className="mt-1 text-center text-sm text-slate-500">One platform — website, marketing, ads and leads, in one place.</p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[['AI Website Development', 'Order a professional website for your trade, with an AI-generated design concept and a clear quotation.', ICONS.globe, 'bg-sky-100 text-sky-700'], ['AI Marketing Assistant', 'Facebook, Instagram and Google ad copy, keywords, landing pages and local marketing ideas.', ICONS.spark, 'bg-orange-100 text-orange-600'], ['Meta & Google Ads', 'Connect your own ad accounts with official OAuth. Campaigns stay paused until you approve them.', ICONS.mega, 'bg-indigo-100 text-indigo-700'], ['Lead CRM & Analytics', 'Track every lead from New to Won, follow up on time, and see real results — never invented numbers.', ICONS.chart, 'bg-emerald-100 text-emerald-700']].map(([t, d, icon, tint]) => (
+              <div key={t as string} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><span className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${tint}`}><Icon d={icon as string} /></span><h3 className="mt-3 font-bold text-[#0f2447]">{t}</h3><p className="mt-2 text-sm leading-relaxed text-slate-600">{d}</p></div>
+            ))}
+          </div>
         </section>
-        <section className="mt-8"><h2 className="text-xl font-bold text-[#0f2447]">Simple pricing</h2><p className="text-sm text-slate-500">Website development is priced separately from the monthly subscription. Advertising budgets are billed separately by Meta / Google.</p>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{PLANS.map(p => <div key={p.id} className="rounded-2xl border border-slate-200 p-5"><h3 className="font-bold">{p.name}</h3><p className="mt-1 text-3xl font-black text-[#0f2447]">${p.monthly}<span className="text-sm font-normal text-slate-500">/mo</span></p><p className="text-xs text-slate-500">{p.leads} · {p.ai}</p><ul className="mt-3 list-disc pl-5 text-sm text-slate-600">{p.features.map(f => <li key={f}>{f}</li>)}</ul></div>)}</div></section>
+        <section className="mt-10 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8"><h2 className="text-center text-2xl font-black text-[#0f2447]">How it works</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-3">{[['1', 'Create your account', 'Sign up with email or Google, then tell us about your business.'], ['2', 'Order & generate', 'Order a website or generate ad copy, keywords and landing pages with AI.'], ['3', 'Track leads & grow', 'Follow every lead from New to Won in the CRM and connect your ad accounts.']].map(([n, t, d]) => (
+            <div key={t} className="text-center"><span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-amber-400 text-lg font-black text-white shadow-md shadow-orange-500/30">{n}</span><h3 className="mt-3 font-bold text-[#0f2447]">{t}</h3><p className="mt-1 text-sm text-slate-600">{d}</p></div>
+          ))}</div>
+        </section>
+        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">Simple pricing</h2><p className="mt-1 text-center text-sm text-slate-500">Website development is priced separately from the monthly subscription. Advertising budgets are billed separately by Meta / Google.</p>
+          <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">{PLANS.map(p => <div key={p.id} className={`relative flex flex-col rounded-2xl border-2 bg-white p-5 shadow-sm transition hover:shadow-lg ${p.id === 'growth' ? 'border-orange-500 shadow-lg shadow-orange-500/20 lg:-translate-y-2' : 'border-slate-200'}`}>{p.id === 'growth' && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-orange-500 to-amber-400 px-3 py-1 text-xs font-black text-white shadow">MOST POPULAR</span>}<h3 className="font-bold text-[#0f2447]">{p.name}</h3><p className="mt-1 text-3xl font-black text-[#0f2447]">${p.monthly}<span className="text-sm font-normal text-slate-500">/mo</span></p><p className="text-xs text-slate-500">{p.leads} · {p.ai}</p><ul className="mt-3 flex-1 space-y-1.5 text-sm text-slate-600">{p.features.map(f => <li key={f} className="flex gap-2"><Icon d={ICONS.check} cls="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />{f}</li>)}</ul><Btn onClick={() => setView('auth')} variant={p.id === 'growth' ? 'primary' : 'outline'}>Choose {p.name}</Btn></div>)}</div></section>
         {!isSupabaseConfigured && <p className="mt-6 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Setup notice: Supabase is not configured yet in this deployment. Sign-up and saved data will work only after VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set. See README.md.</p>}
       </main>
-      <footer className="border-t px-4 py-6 text-center text-xs text-slate-500">NiketDigital.ai — Your AI-Powered Business Growth Partner · Built for US roofing, remodeling, construction &amp; pest control businesses.</footer>
+      <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300"><div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-3"><div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-1 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p></div><div><p className="font-bold text-white">Built for</p><p className="mt-1 text-sm">Roofing · Remodeling · Construction · Pest Control</p></div><div><p className="font-bold text-white">Get started</p><p className="mt-1 text-sm">Start free trial — from $49/mo. No card charged without your approval.</p></div></div><p className="mt-8 border-t border-white/10 pt-4 text-center text-xs text-slate-500">NiketDigital.ai — Built for US roofing, remodeling, construction &amp; pest control businesses.</p></footer>
     </div>
   )
 
@@ -112,17 +148,17 @@ export default function App() {
 
   const shell = (title: string, sub: string, children: React.ReactNode) => (
     <div className="min-h-screen bg-slate-100">
-      <header className="bg-[#0f2447] px-4 py-3 text-white"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2"><span className="text-xl font-black">NiketDigital<span className="text-orange-400">.ai</span></span><span className="text-xs text-slate-300">{business.business_name || 'Your business'} · {business.industry}</span><div className="flex gap-2"><Btn variant="ghost" onClick={() => setView('landing')}>View site</Btn><button className="rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold" onClick={async () => { await supabase.auth.signOut(); setUser(null); setView('landing') }}>Log out</button></div></div></header>
+      <header className="sticky top-0 z-10 bg-gradient-to-r from-[#0a1a33] via-[#0f2447] to-[#1e3f7a] px-4 py-3 text-white shadow-md"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2"><span className="flex items-center gap-2"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500 text-sm font-black text-white">N</span><span className="text-xl font-black">NiketDigital<span className="text-orange-400">.ai</span></span></span><span className="hidden text-xs text-slate-300 sm:block">{business.business_name || 'Your business'} · {business.industry}</span><div className="flex gap-2"><button className="rounded-xl px-3 py-2 text-sm font-semibold text-white/90 transition hover:bg-white/10" onClick={() => setView('landing')}>View site</button><button className="rounded-xl bg-white/10 px-3 py-2 text-sm font-semibold ring-1 ring-white/20 transition hover:bg-white/20" onClick={async () => { await supabase.auth.signOut(); setUser(null); setView('landing') }}>Log out</button></div></div></header>
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 lg:flex-row">
-        <nav className="flex shrink-0 flex-row flex-wrap gap-1 lg:w-60 lg:flex-col">{NAV.map(n => <button key={n.id} onClick={() => setView(n.id)} className={`rounded-lg px-3 py-2 text-left text-sm font-medium ${view === n.id ? 'bg-[#0f2447] text-white' : 'bg-white text-slate-700 hover:bg-slate-200'}`}>{n.label}</button>)}</nav>
-        <main className="min-w-0 flex-1"><h1 className="text-2xl font-black text-[#0f2447]">{title}</h1><p className="text-sm text-slate-500">{sub}</p>{msg && <p className="mt-2 rounded-lg bg-white px-3 py-2 text-sm">{msg}</p>}<div className="mt-4 grid gap-4">{children}</div></main>
+        <nav className="h-fit shrink-0 rounded-2xl bg-white p-3 shadow-md ring-1 ring-slate-200 lg:sticky lg:top-20 lg:w-60"><p className="px-2 pb-2 text-[11px] font-black uppercase tracking-wider text-slate-400">Menu</p><div className="flex flex-row flex-wrap gap-1 lg:flex-col">{NAV.map(n => <button key={n.id} onClick={() => setView(n.id)} className={`flex-1 whitespace-nowrap rounded-xl px-3 py-2.5 text-left text-sm font-semibold transition lg:flex-none ${view === n.id ? 'bg-gradient-to-r from-[#0f2447] to-[#274e96] text-white shadow-md' : 'text-slate-700 hover:bg-slate-100'}`}>{n.label}</button>)}</div><p className="mt-3 hidden rounded-xl bg-orange-50 px-3 py-2 text-xs leading-relaxed text-orange-800 lg:block">Ads stay paused until you approve them. Nothing is charged without your approval.</p></nav>
+        <main className="min-w-0 flex-1"><div className="border-l-4 border-orange-500 pl-3"><h1 className="text-2xl font-black text-[#0f2447]">{title}</h1><p className="text-sm text-slate-500">{sub}</p></div>{msg && <p className="mt-3 rounded-xl bg-white px-3 py-2 text-sm shadow-sm ring-1 ring-slate-200">{msg}</p>}<div className="mt-4 grid gap-4">{children}</div></main>
       </div>
     </div>
   )
 
   if (view === 'onboarding') return shell('Business onboarding', 'Tell us about your business. This creates your workspace — one business per account.', <Onboarding business={business} setBusiness={setBusiness} user={user} onDone={() => { setMsg('Business profile saved.'); setView('dashboard') }} />)
   if (view === 'dashboard') return shell('Dashboard', 'Your business at a glance. Figures below come only from your saved leads and orders — empty means no data yet, not zero performance.',
-    <><div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{[['Total leads', stats.leads], ['Won leads', stats.won], ['Open pipeline', stats.pipeline], ['Open website orders', stats.openOrders]].map(([l, v]) => <div key={l as string} className="rounded-2xl border bg-white p-5"><p className="text-sm text-slate-500">{l}</p><p className="text-3xl font-black text-[#0f2447]">{v}</p></div>)}</div>
+    <><div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{([['Total leads', stats.leads, 'from-[#0f2447] to-[#274e96]', ICONS.users], ['Won leads', stats.won, 'from-emerald-600 to-emerald-500', ICONS.check], ['Open pipeline', stats.pipeline, 'from-orange-500 to-amber-500', ICONS.chart], ['Open website orders', stats.openOrders, 'from-sky-600 to-sky-500', ICONS.globe]] as const).map(([l, v, grad, icon]) => <div key={l} className={`rounded-2xl bg-gradient-to-br ${grad} p-5 text-white shadow-lg`}><span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/20"><Icon d={icon} cls="h-5 w-5" /></span><p className="mt-3 text-3xl font-black">{v}</p><p className="text-sm font-medium opacity-90">{l}</p></div>)}</div>
     <Card title="Next steps" sub="The fastest path to your first result."><ol className="list-decimal space-y-1 pl-5 text-sm text-slate-700"><li>Finish onboarding and pick a plan in Billing.</li><li>Order a website or generate your first ad copy in the AI Marketing Assistant.</li><li>Connect Meta / Google in Integrations — read-only first, campaigns stay paused until you approve them.</li><li>Add leads in the CRM and follow up.</li></ol></Card>
     <Card title="Recent website orders" sub="Website development is priced separately from your subscription."><OrdersList orders={orders} /></Card></>)
   if (view === 'website') return shell('AI Website Development', 'Choose your industry, style and pages, preview the concept, then submit an order. You will receive a quotation before any payment is requested.', <WebsiteOrder business={business} onSubmitted={(o: Order) => { setOrders([o, ...orders]); setMsg('Website order submitted. Status: New Order. A quotation will follow — nothing is charged yet.') }} />)
@@ -148,13 +184,13 @@ function AuthView({ onBack, onDone, setMsg, msg }: { onBack: () => void; onDone:
       else { const { error } = await supabase.auth.signInWithPassword({ email, password }); if (error) throw error; onDone(); }
     } catch (e: unknown) { setErr(e instanceof Error ? e.message : 'Something went wrong.') }
   }
-  return <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4"><form onSubmit={submit} className="w-full max-w-md rounded-2xl bg-white p-6 shadow"><h1 className="text-2xl font-black text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></h1><p className="text-sm text-slate-500">Your AI-Powered Business Growth Partner</p>
+  return <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#0a1a33] via-[#0f2447] to-[#274e96] px-4 py-8"><form onSubmit={submit} className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="h-2 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-500" /><div className="p-6"><h1 className="text-2xl font-black text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></h1><p className="text-sm text-slate-500">Your AI-Powered Business Growth Partner</p>
     <div className="mt-4 flex gap-2">{(['signin', 'signup', 'reset'] as const).map(m => <button type="button" key={m} onClick={() => setMode(m)} className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${mode === m ? 'bg-[#0f2447] text-white' : 'bg-slate-100'}`}>{m === 'signin' ? 'Sign in' : m === 'signup' ? 'Register' : 'Reset password'}</button>)}</div>
     <div className="mt-4 space-y-3"><Input label="Email" type="email" value={email} onChange={setEmail} required /><Input label="Password" type="password" value={password} onChange={setPassword} required={mode !== 'reset'} /></div>
     {err && <p className="mt-3 text-sm text-red-600">{err}</p>}{msg && <p className="mt-3 text-sm text-slate-600">{msg}</p>}
     <div className="mt-4 flex gap-2"><Btn type="submit">{mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send reset email'}</Btn><Btn variant="outline" onClick={onBack}>Back</Btn></div>
     <button type="button" className="mt-4 w-full rounded-lg border px-4 py-2 text-sm font-semibold" onClick={async () => { const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/` } }); if (error) setErr(error.message) }}>Continue with Google</button>
-    <p className="mt-3 text-xs text-slate-500">Google login works only after Google OAuth is enabled in Supabase Auth. Email verification and password reset use Supabase Auth emails.</p></form></div>
+    <p className="mt-3 text-xs text-slate-500">Google login works only after Google OAuth is enabled in Supabase Auth. Email verification and password reset use Supabase Auth emails.</p></div></form></div>
 }
 
 function Onboarding({ business, setBusiness, user, onDone }: { business: Business; setBusiness: (b: Business) => void; user: { id: string; email?: string } | null; onDone: () => void }) {
@@ -165,7 +201,7 @@ function Onboarding({ business, setBusiness, user, onDone }: { business: Busines
     if (error) setErr(error.message); else onDone()
   }
   const set = (k: keyof Business) => (v: string) => setBusiness({ ...business, [k]: v })
-  return <form onSubmit={save} className="rounded-2xl bg-white p-5 shadow-sm"><div className="grid gap-3 sm:grid-cols-2">
+  return <form onSubmit={save} className="overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-slate-200"><div className="bg-gradient-to-r from-[#0f2447] to-[#274e96] px-5 py-4 text-white"><p className="text-sm font-bold">Step 1 — Your business profile</p><p className="text-xs text-slate-300">This creates your workspace. You can change it later.</p></div><div className="p-5"><div className="grid gap-3 sm:grid-cols-2">
     <label className="block text-sm font-medium text-slate-700">Industry<select value={business.industry} onChange={e => set('industry')(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">{INDUSTRIES.map(i => <option key={i}>{i}</option>)}</select></label>
     <Input label="Business name" value={business.business_name} onChange={set('business_name')} required />
     <Input label="Business email" type="email" value={business.business_email} onChange={set('business_email')} required />
@@ -176,7 +212,7 @@ function Onboarding({ business, setBusiness, user, onDone }: { business: Busines
     <Input label="Services offered (comma-separated)" value={business.services} onChange={set('services')} placeholder="Roof replacement, Roof repair" />
     <Input label="Logo / image URL (upload to Supabase Storage — paste the URL here)" value={business.logo_url} onChange={set('logo_url')} placeholder="https://…/logo.png" />
   </div>{err && <p className="mt-3 text-sm text-red-600">{err}</p>}<div className="mt-4"><Btn type="submit">Save business profile</Btn></div>
-  <p className="mt-3 text-xs text-slate-500">Logo and business-image uploads use Supabase Storage (bucket: business-assets). Paste the file URL here until the in-app uploader is enabled.</p></form>
+  <p className="mt-3 text-xs text-slate-500">Logo and business-image uploads use Supabase Storage (bucket: business-assets). Paste the file URL here until the in-app uploader is enabled.</p></div></form>
 }
 
 function OrdersList({ orders }: { orders: Order[] }) {
