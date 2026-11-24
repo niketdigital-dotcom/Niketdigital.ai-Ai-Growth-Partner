@@ -531,14 +531,29 @@ function WebsiteOrder({ business, onSubmitted }: { business: Business; onSubmitt
 
 function AiAssistant({ api, business }: { api: (p: string, b?: unknown) => Promise<any>; business: Business }) {
   const [kind, setKind] = useState('ad_copy'); const [prompt, setPrompt] = useState(''); const [out, setOut] = useState(''); const [busy, setBusy] = useState(false)
-  async function run() { setBusy(true); setOut('')
+  const [vars, setVars] = useState<{ angle?: string; primaryText?: string; headline?: string; description?: string; callToAction?: string }[]>([])
+  const [flags, setFlags] = useState<string[]>([])
+  const [copied, setCopied] = useState(-1)
+  async function run() { setBusy(true); setOut(''); setVars([]); setFlags([]); setCopied(-1)
     const j = await api('/api/ai-generate', { kind, prompt: `${business.business_name} (${business.industry}) — services: ${business.services}; locations: ${business.service_locations}. ${prompt}`, context: '' })
-    setOut(j.error ? `Error: ${j.error}` : JSON.stringify(j.result, null, 2)); setBusy(false)
+    if (j.error) { setOut(`Error: ${j.error}`); setBusy(false); return }
+    try {
+      const parsed = typeof j.result === 'string' ? JSON.parse(j.result) : j.result
+      if (parsed && Array.isArray(parsed.variations)) { setVars(parsed.variations); setFlags(Array.isArray(parsed.complianceFlags) ? parsed.complianceFlags : []) }
+      else setOut(typeof j.result === 'string' ? j.result : JSON.stringify(j.result, null, 2))
+    } catch { setOut(typeof j.result === 'string' ? j.result : JSON.stringify(j.result, null, 2)) }
+    setBusy(false)
+  }
+  function copyVar(i: number, v: { angle?: string; primaryText?: string; headline?: string; description?: string; callToAction?: string }) {
+    const text = `${v.angle || ''}\n${v.primaryText || ''}\nHeadline: ${v.headline || ''}\n${v.description || ''}\n${v.callToAction || ''}`.trim()
+    navigator.clipboard?.writeText(text).then(() => setCopied(i)).catch(() => setCopied(-1))
   }
   return <Card title="Generate marketing content" sub="AI generates drafts only. It never publishes campaigns, spends budget, or changes account permissions.">
     <div className="grid gap-3 sm:grid-cols-2"><label className="block text-sm font-medium">What to generate<select value={kind} onChange={e => setKind(e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2">{[['ad_copy', 'Facebook / Instagram ad copy'], ['meta_campaign', 'Meta campaign plan'], ['google_campaign', 'Google Ads campaign + keywords'], ['landing_page', 'Landing page content'], ['budget_plan', 'Budget plan'], ['report', 'Monthly marketing report (from your numbers)']].map(([v, l]) => <option key={v} value={v}>{l}</option>)}</select></label>
     <Input label="Objective, locations, services, budget" value={prompt} onChange={setPrompt} placeholder="e.g. Get more roof-replacement leads in Dallas, $1,500/mo budget" /></div>
     <div className="mt-3"><Btn onClick={run} disabled={busy}>{busy ? 'Generating…' : 'Generate'}</Btn></div>
+    {flags.length > 0 && <p className="mt-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">Please check before using: {flags.join(' · ')}</p>}
+    {vars.length > 0 && <div className="mt-4 space-y-3">{vars.map((v, i) => <div key={i} className="rounded-xl border border-slate-200 bg-slate-50 p-4"><p className="text-sm font-bold text-[#0f2447]">{i + 1}. {v.angle || 'Ad variation'}</p>{v.primaryText && <p className="mt-2 text-sm text-slate-700">{v.primaryText}</p>}{v.headline && <p className="mt-2 text-sm"><strong>Headline:</strong> {v.headline}</p>}{v.description && <p className="mt-1 text-sm text-slate-600">{v.description}</p>}{v.callToAction && <p className="mt-1 text-sm"><strong>Button:</strong> {v.callToAction}</p>}<div className="mt-3"><Btn variant="outline" onClick={() => copyVar(i, v)}>{copied === i ? 'Copied!' : 'Copy this ad'}</Btn></div></div>)}</div>}
     {out && <pre className="mt-4 max-h-96 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-900 p-4 text-xs text-slate-100">{out}</pre>}
   </Card>
 }
