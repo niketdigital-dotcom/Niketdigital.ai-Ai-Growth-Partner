@@ -56,8 +56,8 @@ export default function App() {
   const [selectedPlan, setSelectedPlan] = useState('growth')
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => { if (data.session?.user) setUser({ id: data.session.user.id, email: data.session.user.email }) })
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ? { id: s.user.id, email: s.user.email } : null))
+    supabase.auth.getSession().then(({ data }) => { if (data.session?.user) { setUser({ id: data.session.user.id, email: data.session.user.email }); setView(v => v === 'landing' ? 'onboarding' : v) } })
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => { setUser(s?.user ? { id: s.user.id, email: s.user.email } : null); if (event === 'SIGNED_IN' && s?.user) setView(v => v === 'landing' || v === 'auth' ? 'onboarding' : v) })
     return () => sub.subscription.unsubscribe()
   }, [])
 
