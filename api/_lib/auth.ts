@@ -4,8 +4,16 @@
 export type AuthedUser = { id: string; email?: string }
 export function getBearerToken(req: any): string {
   const raw = req.headers?.authorization || req.headers?.Authorization || ''
-  if (typeof raw !== 'string') return ''
-  return raw.replace(/^Bearer\s+/i, '').trim()
+  if (typeof raw === 'string' && raw.trim()) return raw.replace(/^Bearer\s+/i, '').trim()
+  // OAuth start links are plain browser navigations (<a href>), which cannot
+  // send an Authorization header. The frontend therefore passes the short-lived
+  // Supabase JWT as ?access_token= to OUR OWN server only (HTTPS); the server
+  // verifies it against Supabase Auth below and never forwards it to Meta/Google.
+  const q = req.query && typeof req.query === 'object' ? req.query : {}
+  const fromQuery = q.access_token || q.accessToken || ''
+  if (typeof fromQuery === 'string' && fromQuery.trim()) return fromQuery.trim()
+  try { const u = new URL(req.url || '/', 'https://example.com'); const t = u.searchParams.get('access_token') || ''; if (t) return t } catch { /* fall through */ }
+  return ''
 }
 export async function verifySupabaseUser(req: any): Promise<AuthedUser | null> {
   const token = getBearerToken(req)
