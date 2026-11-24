@@ -19,7 +19,48 @@ export const PLANS = [
   { id: 'agency', name: 'Agency', monthly: 399, annualMonthly: 319, leads: 'Unlimited leads', ai: 'Unlimited AI generations', features: ['Everything in Professional', 'Multiple businesses', 'White-label reports', 'Dedicated support'] },
 ] as const
 
-type View = 'landing' | 'auth' | 'onboarding' | 'dashboard' | 'website' | 'ai' | 'meta' | 'google' | 'campaigns' | 'crm' | 'analytics' | 'billing' | 'integrations' | 'support' | 'admin'
+
+/* Industry detail pages — clicked from the header menu on the home page. */
+export const INDUSTRY_DETAILS: Record<Industry, { short: string; tagline: string; blurb: string; gradient: string; icon: string; services: [string, string][]; pages: string[]; marketing: string; ads: string; crm: string }> = {
+  'Roofing': {
+    short: 'Roofing', tagline: 'More roof jobs, less chasing leads.', blurb: 'A website, ads and follow-up built for roofers — so homeowners in your service area find you first when a roof leaks, a storm hits, or a replacement is due.',
+    gradient: 'from-[#0a1a33] via-[#0f2447] to-[#1e3f7a]', icon: 'home',
+    services: [['Roof Replacement', 'Full tear-off and replacement, with photos, materials and warranty details on the page.'], ['Roof Repair', 'Leaks, missing shingles and flashing repairs — with a fast estimate form.'], ['Storm Damage Repair', 'Hail and wind damage help, inspections and insurance paperwork support.'], ['Gutters', 'Gutter installation, repair and cleaning as an add-on service on your site.'], ['Roof Inspections', 'Free or paid inspections that turn into booked repair and replacement jobs.']],
+    pages: ['Home', 'Roofing Services', 'Roof Replacement', 'Roof Repair', 'Service Areas', 'Gallery', 'Contact Us'],
+    marketing: 'Ad copy and keywords for roof replacement and repair — for example "roof replacement near me" — plus landing pages for Roof Replacement and Roof Repair.',
+    ads: 'Meta and Google campaigns for roof-replacement and storm-damage leads in your cities. Campaigns stay paused until you approve them.',
+    crm: 'Every roofing lead tracked from New to Won — inspection booked, estimate sent, job won.',
+  },
+  'Home Remodeling': {
+    short: 'Remodeling', tagline: 'Fill your calendar with remodel projects.', blurb: 'A premium website and marketing that shows off your work — so homeowners planning a kitchen, bathroom or whole-home remodel choose you, not the next quote.',
+    gradient: 'from-[#2b1055] via-[#4c1d95] to-[#7c3aed]', icon: 'tool',
+    services: [['Kitchen Remodeling', 'Cabinets, worktops and layouts — with before-and-after galleries on your site.'], ['Bathroom Remodeling', 'Showers, baths and fittings, with a clear estimate and booking form.'], ['Basement Finishing', 'Turn unused space into a living room, office or rental — shown as a service page.'], ['Home Additions', 'Extra rooms and extensions, with project steps and timelines explained.'], ['Whole-Home Remodeling', 'Full-home projects with a portfolio page that builds trust before the first call.']],
+    pages: ['Home', 'Services', 'Kitchen Remodeling', 'Bathroom Remodeling', 'Gallery', 'Service Areas', 'Contact Us'],
+    marketing: 'Ad copy and keywords for kitchen and bathroom remodeling — for example "kitchen remodeling contractor" — plus landing pages for Kitchen and Bathroom Remodeling.',
+    ads: 'Meta and Google campaigns for kitchen, bathroom and whole-home remodel leads in your service area. Campaigns stay paused until you approve them.',
+    crm: 'Every remodel lead tracked from New to Won — consultation booked, proposal sent, project won.',
+  },
+  'Construction': {
+    short: 'Construction', tagline: 'Win bigger builds with a bigger presence.', blurb: 'A professional website and marketing for builders and general contractors — so clients, developers and commercial customers trust you with their next project.',
+    gradient: 'from-[#1c1917] via-[#44403c] to-[#a16207]', icon: 'building',
+    services: [['General Contracting', 'Your full service list, licences and past projects on one professional site.'], ['New Home Builds', 'Custom-home pages with floor plans, progress photos and enquiry forms.'], ['Commercial Construction', 'Offices, retail and industrial work, with a portfolio that wins tenders.'], ['Renovations', 'Structural and interior renovations, with timelines and budgets explained.'], ['Project Management', 'Timelines, milestones and client updates — shown as a service on your site.']],
+    pages: ['Home', 'About Us', 'Services', 'Gallery', 'Service Areas', 'Contact Us'],
+    marketing: 'Ad copy and keywords for general contracting and new builds — for example "general contractor near me" — plus landing pages for your main services.',
+    ads: 'Meta and Google campaigns for new-build, renovation and commercial construction enquiries. Campaigns stay paused until you approve them.',
+    crm: 'Every construction enquiry tracked from New to Won — site visit, proposal sent, contract won.',
+  },
+  'Pest Control': {
+    short: 'Pest Control', tagline: 'More bookings, season after season.', blurb: 'A fast website and local marketing for pest control — so homeowners and businesses call you first when they need help, and keep coming back for regular treatments.',
+    gradient: 'from-[#052e16] via-[#166534] to-[#16a34a]', icon: 'bug',
+    services: [['Residential Pest Control', 'Regular home treatments, with plans and pricing explained on your site.'], ['Termite Control', 'Inspections and treatments, with trust-building detail for worried homeowners.'], ['Rodent Control', 'Rats and mice removal, with a fast booking form for urgent jobs.'], ['Mosquito Control', 'Seasonal treatments for gardens and outdoor spaces.'], ['Commercial Pest Control', 'Restaurants, offices and rentals — with service contracts and scheduled visits.']],
+    pages: ['Home', 'Pest Control Services', 'Service Areas', 'Gallery', 'Contact Us'],
+    marketing: 'Ad copy and keywords for pest control — for example "pest control near me" — plus landing pages for Residential and Termite Control.',
+    ads: 'Meta and Google campaigns for residential and commercial pest-control bookings in your area. Campaigns stay paused until you approve them.',
+    crm: 'Every pest-control lead tracked from New to Won — inspection booked, treatment plan sent, customer won.',
+  },
+}
+
+type View = 'landing' | 'industry' | 'auth' | 'onboarding' | 'dashboard' | 'website' | 'ai' | 'meta' | 'google' | 'campaigns' | 'crm' | 'analytics' | 'billing' | 'integrations' | 'support' | 'admin'
 type Business = { id?: string; business_name: string; industry: string; business_email: string; phone: string; website: string; service_locations: string; address: string; services: string; logo_url: string }
 type Lead = { id: string; name: string; email: string; phone: string; source: string; status: string; notes: string; created_at?: string }
 type Order = { id: string; business_name: string; industry: string; design_style: string; status: string; created_at?: string }
@@ -49,6 +90,10 @@ const ICONS = {
   users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm14 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75',
   shield: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z',
   rocket: 'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Zm12-12.5a9 9 0 0 1 6.5 6.5L12 21.5 3.5 13 14.5 2a9 9 0 0 1 2 2.5Zm-4 4 3 3',
+  home: 'M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10',
+  tool: 'M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7Z',
+  building: 'M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 8h3a1 1 0 0 1 1 1v12M2 21h20M8 7h2m-2 4h2m-2 4h2m4-8h2m-2 4h2m-2 4h2',
+  bug: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0 8Zm-8 0h4m-4 8h4m8-8h4m-4 8h4M12 3v3m0 12v3M9 9l-2-2m9 2 2-2M9 15l-2 2m9-2 2 2',
 }
 function Input({ label, value, onChange, type = 'text', placeholder = '', required = false }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string; required?: boolean }) {
   return <label className="block text-sm font-medium text-slate-700">{label}<input required={required} type={type} value={value} placeholder={placeholder} onChange={e => onChange(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100" /></label>
@@ -61,6 +106,8 @@ function Empty({ text }: { text: string }) { return <p className="rounded-xl bor
 
 export default function App() {
   const [view, setView] = useState<View>('landing')
+  const [industry, setIndustry] = useState<Industry>('Roofing')
+  const openIndustry = (i: Industry) => { setIndustry(i); setView('industry'); window.scrollTo(0, 0) }
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [business, setBusiness] = useState<Business>({ business_name: '', industry: 'Roofing', business_email: '', phone: '', website: '', service_locations: '', address: '', services: '', logo_url: '' })
   const [leads, setLeads] = useState<Lead[]>([])
@@ -99,7 +146,7 @@ export default function App() {
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex items-center gap-2"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] text-lg font-black text-orange-400">N</span><span><span className="block text-xl font-black leading-none text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><span className="text-[11px] text-slate-500">Your AI-Powered Business Growth Partner</span></span></div>
-          <nav className="hidden flex-wrap gap-1 text-sm font-medium text-slate-600 md:flex">{INDUSTRIES.map(i => <span key={i} className="rounded-full bg-slate-100 px-3 py-1">{i}</span>)}</nav>
+          <nav className="flex flex-wrap gap-1 text-sm font-medium text-slate-600">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-slate-100 px-3 py-1 transition hover:bg-orange-100 hover:text-orange-700">{INDUSTRY_DETAILS[i].short}</button>)}</nav>
           <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
         </div>
       </header>
@@ -111,6 +158,7 @@ export default function App() {
               <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-orange-300 ring-1 ring-white/20"><Icon d={ICONS.spark} cls="h-3.5 w-3.5" /> Built for US contractors</p>
               <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Grow your contracting business <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent">with AI.</span></h1>
               <p className="mt-4 max-w-xl text-slate-300">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for roofing, remodeling, construction and pest control businesses in the United States.</p>
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs"><span className="font-bold text-slate-300">Explore:</span>{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-white/10 px-3 py-1.5 font-bold text-white ring-1 ring-white/20 transition hover:bg-orange-500">{INDUSTRY_DETAILS[i].short}</button>)}</div>
               <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('billing')}>See plans — from $49/mo</Btn></div>
               <div className="mt-6 flex flex-wrap gap-2 text-xs font-semibold text-slate-200"><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.check} cls="h-3.5 w-3.5 text-emerald-400" /> No card charged without your approval</span><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.shield} cls="h-3.5 w-3.5 text-emerald-400" /> Ads paused until you approve</span><span className="flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 ring-1 ring-white/15"><Icon d={ICONS.users} cls="h-3.5 w-3.5 text-sky-300" /> One business per account</span></div>
             </div>
@@ -139,9 +187,65 @@ export default function App() {
           <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">{PLANS.map(p => <div key={p.id} className={`relative flex flex-col rounded-2xl border-2 bg-white p-5 shadow-sm transition hover:shadow-lg ${p.id === 'growth' ? 'border-orange-500 shadow-lg shadow-orange-500/20 lg:-translate-y-2' : 'border-slate-200'}`}>{p.id === 'growth' && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-orange-500 to-amber-400 px-3 py-1 text-xs font-black text-white shadow">MOST POPULAR</span>}<h3 className="font-bold text-[#0f2447]">{p.name}</h3><p className="mt-1 text-3xl font-black text-[#0f2447]">${p.monthly}<span className="text-sm font-normal text-slate-500">/mo</span></p><p className="text-xs text-slate-500">{p.leads} · {p.ai}</p><ul className="mt-3 flex-1 space-y-1.5 text-sm text-slate-600">{p.features.map(f => <li key={f} className="flex gap-2"><Icon d={ICONS.check} cls="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />{f}</li>)}</ul><Btn onClick={() => setView('auth')} variant={p.id === 'growth' ? 'primary' : 'outline'}>Choose {p.name}</Btn></div>)}</div></section>
         {!isSupabaseConfigured && <p className="mt-6 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Setup notice: Supabase is not configured yet in this deployment. Sign-up and saved data will work only after VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set. See README.md.</p>}
       </main>
-      <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300"><div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-3"><div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-1 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p></div><div><p className="font-bold text-white">Built for</p><p className="mt-1 text-sm">Roofing · Remodeling · Construction · Pest Control</p></div><div><p className="font-bold text-white">Get started</p><p className="mt-1 text-sm">Start free trial — from $49/mo. No card charged without your approval.</p></div></div><p className="mt-8 border-t border-white/10 pt-4 text-center text-xs text-slate-500">NiketDigital.ai — Built for US roofing, remodeling, construction &amp; pest control businesses.</p></footer>
+      <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300"><div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-3"><div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-1 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p></div><div><p className="font-bold text-white">Built for</p><p className="mt-1 flex flex-wrap gap-2 text-sm">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-white/10 px-3 py-1 font-semibold text-slate-200 transition hover:bg-orange-500 hover:text-white">{INDUSTRY_DETAILS[i].short}</button>)}</p></div><div><p className="font-bold text-white">Get started</p><p className="mt-1 text-sm">Start free trial — from $49/mo. No card charged without your approval.</p></div></div><p className="mt-8 border-t border-white/10 pt-4 text-center text-xs text-slate-500">NiketDigital.ai — Built for US roofing, remodeling, construction &amp; pest control businesses.</p></footer>
     </div>
   )
+
+
+  // ---- Industry detail ----
+  if (view === 'industry') {
+    const d = INDUSTRY_DETAILS[industry]
+    return (
+    <div className="min-h-screen bg-slate-50">
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <button onClick={() => setView('landing')} className="flex items-center gap-2 text-left"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] text-lg font-black text-orange-400">N</span><span><span className="block text-xl font-black leading-none text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><span className="text-[11px] text-slate-500">Your AI-Powered Business Growth Partner</span></span></button>
+          <nav className="flex flex-wrap gap-1 text-sm font-medium text-slate-600">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className={`rounded-full px-3 py-1 transition ${i === industry ? 'bg-[#0f2447] font-bold text-white' : 'bg-slate-100 hover:bg-orange-100 hover:text-orange-700'}`}>{INDUSTRY_DETAILS[i].short}</button>)}</nav>
+          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+        </div>
+      </header>
+      <main className="mx-auto max-w-6xl px-4 pb-16">
+        <button onClick={() => setView('landing')} className="mt-4 text-sm font-bold text-[#0f2447] hover:text-orange-600">← Back to home</button>
+        <section className={`relative mt-4 overflow-hidden rounded-3xl bg-gradient-to-br ${d.gradient} px-6 py-12 text-white shadow-xl sm:px-10`}>
+          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/15 blur-3xl" />
+          <div className="relative grid items-center gap-8 lg:grid-cols-2">
+            <div>
+              <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25"><Icon d={ICONS[d.icon as keyof typeof ICONS]} cls="h-8 w-8" /></span>
+              <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">{d.short} growth, powered by AI.</h1>
+              <p className="mt-2 text-lg font-bold text-orange-300">{d.tagline}</p>
+              <p className="mt-3 max-w-xl text-slate-200">{d.blurb}</p>
+              <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('landing')}>See all industries</Btn></div>
+            </div>
+            <div className="rounded-2xl bg-white p-5 text-slate-800 shadow-2xl">
+              <div className="flex items-center justify-between"><p className="font-bold text-[#0f2447]">Your {d.short.toLowerCase()} website — preview</p><span className="flex gap-1"><span className="h-2.5 w-2.5 rounded-full bg-red-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></span></div>
+              <p className="mt-1 text-xs text-slate-500">Example layout only — your real website is built after your quotation is approved.</p>
+              <div className="mt-4 rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] px-4 py-5 text-white"><p className="text-lg font-black">Your {d.short} Business</p><p className="text-xs text-slate-300">{d.tagline}</p><span className="mt-3 inline-block rounded-lg bg-orange-500 px-3 py-1.5 text-xs font-bold">Get a free estimate</span></div>
+              <div className="mt-3 flex flex-wrap gap-1.5">{d.pages.map(pg => <span key={pg} className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">{pg}</span>)}</div>
+              <div className="mt-3 space-y-2">{d.services.slice(0, 3).map(([name]) => <div key={name} className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700"><Icon d={ICONS.check} cls="h-4 w-4 shrink-0 text-emerald-500" />{name}</div>)}</div>
+            </div>
+          </div>
+        </section>
+        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">{d.short} services we build for</h2><p className="mt-1 text-center text-sm text-slate-500">Each service gets its own page, estimate form and ad copy on your website.</p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {d.services.map(([name, desc], idx) => (
+              <div key={name} className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${idx === 0 ? 'sm:col-span-2 lg:col-span-1 ring-2 ring-orange-200' : ''}`}><span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 text-orange-600"><Icon d={ICONS[d.icon as keyof typeof ICONS]} cls="h-5 w-5" /></span><h3 className="mt-3 font-bold text-[#0f2447]">{name}</h3><p className="mt-1 text-sm leading-relaxed text-slate-600">{desc}</p></div>
+            ))}
+            <div className="flex flex-col justify-center rounded-2xl bg-gradient-to-br from-[#0f2447] to-[#274e96] p-5 text-white shadow-md"><p className="text-lg font-black">Plus your other services</p><p className="mt-1 text-sm text-slate-300">Tell us what you offer in onboarding — every service can be added as a page on your website.</p><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+          </div>
+        </section>
+        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">What you get with NiketDigital.ai</h2><p className="mt-1 text-center text-sm text-slate-500">Built for {d.short.toLowerCase()} businesses — not a generic template.</p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[['AI Website', d.pages.join(', ') + ' — a professional website for your trade, with a clear quotation before any payment.', ICONS.globe, 'bg-sky-100 text-sky-700'], ['AI Marketing', d.marketing, ICONS.spark, 'bg-orange-100 text-orange-600'], ['Meta & Google Ads', d.ads, ICONS.mega, 'bg-indigo-100 text-indigo-700'], ['Lead CRM', d.crm, ICONS.chart, 'bg-emerald-100 text-emerald-700']].map(([t, desc, icon, tint]) => (
+              <div key={t as string} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><span className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${tint}`}><Icon d={icon as string} /></span><h3 className="mt-3 font-bold text-[#0f2447]">{t}</h3><p className="mt-2 text-sm leading-relaxed text-slate-600">{desc}</p></div>
+            ))}
+          </div>
+        </section>
+        <section className="mt-10 rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200 sm:p-8"><h2 className="text-2xl font-black text-[#0f2447]">Ready to grow your {d.short.toLowerCase()} business?</h2><p className="mx-auto mt-2 max-w-xl text-sm text-slate-600">Plans from $49/mo — Starter $49, Growth $99, Professional $199, Agency $399. Website development is priced separately from the monthly subscription, and ad budgets are billed separately by Meta / Google.</p><div className="mt-5 flex flex-wrap justify-center gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('landing')}>Back to home</Btn></div></section>
+      </main>
+      <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300"><div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-3"><div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-1 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p></div><div><p className="font-bold text-white">Built for</p><p className="mt-1 flex flex-wrap gap-2 text-sm">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-white/10 px-3 py-1 font-semibold text-slate-200 transition hover:bg-orange-500 hover:text-white">{INDUSTRY_DETAILS[i].short}</button>)}</p></div><div><p className="font-bold text-white">Get started</p><p className="mt-1 text-sm">Start free trial — from $49/mo. No card charged without your approval.</p></div></div><p className="mt-8 border-t border-white/10 pt-4 text-center text-xs text-slate-500">NiketDigital.ai — Built for US roofing, remodeling, construction &amp; pest control businesses.</p></footer>
+    </div>
+    )
+  }
 
   // ---- Auth ----
   if (view === 'auth') return <AuthView onBack={() => setView('landing')} onDone={() => setView('onboarding')} setMsg={setMsg} msg={msg} />
