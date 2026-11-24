@@ -20,6 +20,28 @@ export const PLANS = [
 ] as const
 
 
+/* All services of the NiketDigital.ai tool — shown on the home page. */
+export const ALL_SERVICES: { title: string; desc: string; icon: string; grad: string; tint: string; target: View }[] = [
+  { title: 'AI Website Development', desc: 'Order a professional website for your trade — Home, Services, Gallery, Contact and more — with an AI design concept and a clear quotation first.', icon: 'globe', grad: 'from-sky-500 to-blue-700', tint: 'bg-sky-100 text-sky-700', target: 'website' },
+  { title: 'AI Marketing Assistant', desc: 'Facebook, Instagram and Google ad copy, headlines, keywords, landing-page content and local marketing ideas — generated in seconds.', icon: 'spark', grad: 'from-orange-500 to-amber-500', tint: 'bg-orange-100 text-orange-600', target: 'ai' },
+  { title: 'Meta Ads', desc: 'Connect your Facebook and Instagram ad account with official OAuth. Campaigns are created as drafts, paused by default.', icon: 'mega', grad: 'from-indigo-500 to-violet-600', tint: 'bg-indigo-100 text-indigo-700', target: 'meta' },
+  { title: 'Google Ads', desc: 'Connect Google Ads with official OAuth. Search campaigns stay as drafts until you review and approve them.', icon: 'target', grad: 'from-emerald-500 to-teal-600', tint: 'bg-emerald-100 text-emerald-700', target: 'google' },
+  { title: 'Campaign Management', desc: 'See all your campaign drafts in one place. Nothing is published, and no budget is changed, without your explicit confirmation.', icon: 'rocket', grad: 'from-rose-500 to-pink-600', tint: 'bg-rose-100 text-rose-700', target: 'campaigns' },
+  { title: 'Lead CRM', desc: 'Capture every lead and track it from New to Won — Contacted, Qualified, Estimate Scheduled, Proposal Sent — with CSV export.', icon: 'users', grad: 'from-[#0f2447] to-[#274e96]', tint: 'bg-slate-200 text-[#0f2447]', target: 'crm' },
+  { title: 'Analytics & Reporting', desc: 'Reports calculated only from your saved leads and connected ad accounts. No invented numbers — empty means no data yet.', icon: 'chart', grad: 'from-cyan-500 to-sky-600', tint: 'bg-cyan-100 text-cyan-700', target: 'analytics' },
+  { title: 'Stripe Billing', desc: 'Monthly or annual subscriptions — Starter $49, Growth $99, Professional $199, Agency $399 — paid securely through Stripe.', icon: 'card', grad: 'from-violet-500 to-purple-600', tint: 'bg-violet-100 text-violet-700', target: 'billing' },
+  { title: 'Integrations', desc: 'Connect Meta, Google Ads and Stripe with official OAuth. A connection is only shown as connected after a successful live check.', icon: 'link', grad: 'from-amber-500 to-orange-600', tint: 'bg-amber-100 text-amber-700', target: 'integrations' },
+  { title: 'Support Center', desc: 'Raise a support ticket from inside the app and the NiketDigital team will reply by email.', icon: 'headset', grad: 'from-teal-500 to-emerald-600', tint: 'bg-teal-100 text-teal-700', target: 'support' },
+  { title: 'AI Automation', desc: 'Automation workflows that save time on follow-ups and reporting — part of the Professional and Agency plans.', icon: 'gear', grad: 'from-slate-600 to-slate-800', tint: 'bg-slate-200 text-slate-700', target: 'ai' },
+  { title: 'Super-Admin Dashboard', desc: 'For the NiketDigital team — customers, subscriptions, orders, AI usage and audit logs, protected by an admin check.', icon: 'crown', grad: 'from-yellow-500 to-amber-600', tint: 'bg-yellow-100 text-yellow-700', target: 'admin' },
+]
+/* Sample reviews only — replace with real customer quotes. No real customers are named here. */
+export const SAMPLE_REVIEWS: { name: string; role: string; quote: string }[] = [
+  { name: 'Mike', role: 'Roofing contractor', quote: 'The website and the lead list are finally in one place. I can see every enquiry, from the first call to the booked job.' },
+  { name: 'Sarah', role: 'Remodeling business owner', quote: 'The AI ad copy saves me hours every week. I review the drafts, approve what I like, and nothing goes live without me.' },
+  { name: 'David', role: 'Pest control owner', quote: 'Signing up was simple, and the dashboard is easy to understand — even without any technical knowledge.' },
+]
+
 /* Industry detail pages — clicked from the header menu on the home page. */
 export const INDUSTRY_DETAILS: Record<Industry, { short: string; tagline: string; blurb: string; gradient: string; icon: string; services: [string, string][]; pages: string[]; marketing: string; ads: string; crm: string }> = {
   'Roofing': {
@@ -60,7 +82,7 @@ export const INDUSTRY_DETAILS: Record<Industry, { short: string; tagline: string
   },
 }
 
-type View = 'landing' | 'industry' | 'auth' | 'onboarding' | 'dashboard' | 'website' | 'ai' | 'meta' | 'google' | 'campaigns' | 'crm' | 'analytics' | 'billing' | 'integrations' | 'support' | 'admin'
+type View = 'landing' | 'industry' | 'about' | 'privacy' | 'terms' | 'contact' | 'auth' | 'onboarding' | 'dashboard' | 'website' | 'ai' | 'meta' | 'google' | 'campaigns' | 'crm' | 'analytics' | 'billing' | 'integrations' | 'support' | 'admin'
 type Business = { id?: string; business_name: string; industry: string; business_email: string; phone: string; website: string; service_locations: string; address: string; services: string; logo_url: string }
 type Lead = { id: string; name: string; email: string; phone: string; source: string; status: string; notes: string; created_at?: string }
 type Order = { id: string; business_name: string; industry: string; design_style: string; status: string; created_at?: string }
@@ -94,6 +116,15 @@ const ICONS = {
   tool: 'M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7Z',
   building: 'M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M16 8h3a1 1 0 0 1 1 1v12M2 21h20M8 7h2m-2 4h2m-2 4h2m4-8h2m-2 4h2m-2 4h2',
   bug: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0 8Zm-8 0h4m-4 8h4m8-8h4m-4 8h4M12 3v3m0 12v3M9 9l-2-2m9 2 2-2M9 15l-2 2m9-2 2 2',
+  card: 'M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5Zm0 4h20M6 15h4',
+  link: 'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7',
+  headset: 'M3 13a9 9 0 0 1 18 0M3 13v4a2 2 0 0 0 2 2h1v-7H5a2 2 0 0 0-2 1Zm18 0v4a2 2 0 0 1-2 2h-1v-7h1a2 2 0 0 1 2 1ZM21 19v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3v4Z',
+  gear: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7.4-3a7.4 7.4 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-2-1.2L14.5 3h-5l-.4 2.6a7.6 7.6 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7.4 7.4 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 0 0 2 1.2l.4 2.6h5l.4-2.6a7.6 7.6 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.06-.4.1-.8.1-1.2Z',
+  crown: 'M2 8l4 4 6-6 6 6 4-4-1.5 10h-17L2 8Zm2 13h16',
+  target: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Zm0-6a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0-4a1 1 0 1 0 0-2',
+  doc: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-2 2v6h6M9 13h6m-6 4h6',
+  mail: 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm2 4 8 6 8-6',
+  star: 'M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1L12 2Z',
 }
 function Input({ label, value, onChange, type = 'text', placeholder = '', required = false }: { label: string; value: string; onChange: (v: string) => void; type?: string; placeholder?: string; required?: boolean }) {
   return <label className="block text-sm font-medium text-slate-700">{label}<input required={required} type={type} value={value} placeholder={placeholder} onChange={e => onChange(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100" /></label>
@@ -103,6 +134,18 @@ function Btn({ children, onClick, variant = 'primary', type = 'button', disabled
   return <button type={type} disabled={disabled} onClick={onClick} className={`rounded-xl px-5 py-2.5 text-sm font-bold transition disabled:opacity-50 ${cls}`}>{children}</button>
 }
 function Empty({ text }: { text: string }) { return <p className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">{text}</p> }
+function SiteFooter({ go, openIndustry }: { go: (v: View) => void; openIndustry: (i: Industry) => void }) {
+  const link = 'block py-1 text-sm text-slate-400 transition hover:text-white'
+  return <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300">
+    <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
+      <div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-2 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p><p className="mt-2 text-sm text-slate-400">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for US roofing, remodeling, construction and pest control businesses.</p></div>
+      <div><p className="font-bold text-white">Company</p><div className="mt-2"><button className={link} onClick={() => go('landing')}>Home</button><button className={link} onClick={() => go('about')}>About Us</button><button className={link} onClick={() => go('contact')}>Contact Us</button><button className={link} onClick={() => go('auth')}>Sign in</button><button className={link} onClick={() => go('auth')}>Start free trial</button></div></div>
+      <div><p className="font-bold text-white">Industries</p><div className="mt-2">{INDUSTRIES.map(i => <button key={i} className={link} onClick={() => openIndustry(i)}>{i}</button>)}</div><p className="mt-4 font-bold text-white">Services</p><div className="mt-2">{ALL_SERVICES.slice(0, 5).map(sv => <button key={sv.title} className={link} onClick={() => go('landing')}>{sv.title}</button>)}</div></div>
+      <div><p className="font-bold text-white">Legal</p><div className="mt-2"><button className={link} onClick={() => go('privacy')}>Privacy Policy</button><button className={link} onClick={() => go('terms')}>Terms of Service</button><button className={link} onClick={() => go('billing')}>Pricing — from $49/mo</button></div><p className="mt-4 text-sm text-slate-400">Questions? Sign in and raise a ticket in the Support Center inside the app.</p></div>
+    </div>
+    <p className="mx-auto mt-8 max-w-6xl border-t border-white/10 pt-4 text-center text-xs text-slate-500">© 2026 NiketDigital.ai — Built for US roofing, remodeling, construction &amp; pest control businesses.</p>
+  </footer>
+}
 
 export default function App() {
   const [view, setView] = useState<View>('landing')
@@ -115,6 +158,7 @@ export default function App() {
   const [msg, setMsg] = useState('')
   const [billingAnnual, setBillingAnnual] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState('growth')
+  const [contactName, setContactName] = useState(''); const [contactEmail, setContactEmail] = useState(''); const [contactMsgText, setContactMsgText] = useState(''); const [contactSent, setContactSent] = useState('')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { if (data.session?.user) { setUser({ id: data.session.user.id, email: data.session.user.email }); setView(v => v === 'landing' ? 'onboarding' : v) } })
@@ -171,10 +215,34 @@ export default function App() {
             </div>
           </div>
         </section>
-        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">Everything you need to grow</h2><p className="mt-1 text-center text-sm text-slate-500">One platform — website, marketing, ads and leads, in one place.</p>
+        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">All services — everything included</h2><p className="mt-1 text-center text-sm text-slate-500">One platform — website, marketing, ads and leads, in one place. Click a service to open it after signing in.</p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {ALL_SERVICES.map(sv => (
+              <div key={sv.title} className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div className={`relative flex h-28 items-center justify-center bg-gradient-to-br ${sv.grad} text-white`}><span className="pointer-events-none absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/15" /><span className="pointer-events-none absolute -bottom-6 -left-4 h-20 w-20 rounded-full bg-white/10" /><span className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/30"><Icon d={ICONS[sv.icon as keyof typeof ICONS]} cls="h-8 w-8" /></span></div>
+                <div className="p-5"><h3 className="font-bold text-[#0f2447]">{sv.title}</h3><p className="mt-2 text-sm leading-relaxed text-slate-600">{sv.desc}</p><button onClick={() => setView('auth')} className="mt-3 text-sm font-bold text-orange-600 hover:text-orange-500">Open {sv.title} →</button></div>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">Explore industries</h2><p className="mt-1 text-center text-sm text-slate-500">Tap an industry to see its services, website preview and marketing.</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[['AI Website Development', 'Order a professional website for your trade, with an AI-generated design concept and a clear quotation.', ICONS.globe, 'bg-sky-100 text-sky-700'], ['AI Marketing Assistant', 'Facebook, Instagram and Google ad copy, keywords, landing pages and local marketing ideas.', ICONS.spark, 'bg-orange-100 text-orange-600'], ['Meta & Google Ads', 'Connect your own ad accounts with official OAuth. Campaigns stay paused until you approve them.', ICONS.mega, 'bg-indigo-100 text-indigo-700'], ['Lead CRM & Analytics', 'Track every lead from New to Won, follow up on time, and see real results — never invented numbers.', ICONS.chart, 'bg-emerald-100 text-emerald-700']].map(([t, d, icon, tint]) => (
-              <div key={t as string} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><span className={`inline-flex h-11 w-11 items-center justify-center rounded-xl ${tint}`}><Icon d={icon as string} /></span><h3 className="mt-3 font-bold text-[#0f2447]">{t}</h3><p className="mt-2 text-sm leading-relaxed text-slate-600">{d}</p></div>
+            {INDUSTRIES.map(i => (
+              <button key={i} onClick={() => openIndustry(i)} className="overflow-hidden rounded-2xl text-left shadow-md transition hover:-translate-y-1 hover:shadow-lg">
+                <div className={`flex h-24 items-center gap-3 bg-gradient-to-br ${INDUSTRY_DETAILS[i].gradient} px-4 text-white`}><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/20 ring-1 ring-white/30"><Icon d={ICONS[INDUSTRY_DETAILS[i].icon as keyof typeof ICONS]} /></span><span><span className="block font-black">{INDUSTRY_DETAILS[i].short}</span><span className="text-xs text-slate-200">{INDUSTRY_DETAILS[i].tagline}</span></span></div>
+                <div className="bg-white px-4 py-3 text-sm font-bold text-[#0f2447]">View {INDUSTRY_DETAILS[i].short} services →</div>
+              </button>
+            ))}
+          </div>
+        </section>
+        <section className="mt-10 grid gap-4 lg:grid-cols-2">
+          <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200"><div className="flex h-36 items-center justify-center gap-3 bg-gradient-to-br from-[#0a1a33] via-[#0f2447] to-[#274e96] text-white"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-2xl font-black">N</span><span><span className="block text-2xl font-black">NiketDigital<span className="text-orange-400">.ai</span></span><span className="text-sm text-slate-300">Your AI-Powered Business Growth Partner</span></span></div><div className="p-6"><h2 className="text-xl font-black text-[#0f2447]">About NiketDigital.ai</h2><p className="mt-2 text-sm leading-relaxed text-slate-600">NiketDigital.ai is an AI-powered growth platform built for US roofing, remodeling, construction and pest control businesses. It brings together a professional AI-built website, an AI marketing assistant, Meta and Google Ads drafts, and a lead CRM — so a busy contractor can get more enquiries, follow up faster, and grow without needing technical knowledge or a marketing team.</p><p className="mt-2 text-sm leading-relaxed text-slate-600">Everything is designed for non-technical owners: sign up, tell us about your business, and start with a website order or your first AI-generated ad copy. Campaigns are always created as drafts, paused by default, and nothing is published or charged without your explicit approval.</p><button onClick={() => setView('about')} className="mt-3 text-sm font-bold text-orange-600 hover:text-orange-500">Read more about us →</button></div></div>
+          <div className="rounded-3xl bg-gradient-to-br from-orange-500 to-amber-500 p-6 text-white shadow-md"><h2 className="text-xl font-black">Why contractors choose us</h2><ul className="mt-4 space-y-3 text-sm">{['One platform for website, marketing, ads and leads.', 'AI does the writing — you approve everything before it goes live.', 'Real numbers only — reports come from your saved leads and connected accounts.', 'No card charged without your approval. Ads stay paused until you say yes.'].map(t => <li key={t} className="flex gap-2"><Icon d={ICONS.check} cls="mt-0.5 h-5 w-5 shrink-0" />{t}</li>)}</ul><div className="mt-5"><Btn onClick={() => setView('auth')}>Start free trial</Btn></div></div>
+        </section>
+        <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">What contractors say</h2><p className="mt-1 text-center text-sm text-slate-500">Sample reviews — real customer quotes will be added here.</p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            {SAMPLE_REVIEWS.map(r => (
+              <div key={r.name} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"><div className="flex gap-1 text-amber-400">{[0, 1, 2, 3, 4].map(n => <Icon key={n} d={ICONS.star} cls="h-4 w-4" />)}</div><p className="mt-3 text-sm leading-relaxed text-slate-700">“{r.quote}”</p><p className="mt-4 font-bold text-[#0f2447]">{r.name}</p><p className="text-xs text-slate-500">{r.role}</p><p className="mt-3 rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-800">Sample review — replace with a real customer quote</p></div>
             ))}
           </div>
         </section>
@@ -187,10 +255,73 @@ export default function App() {
           <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">{PLANS.map(p => <div key={p.id} className={`relative flex flex-col rounded-2xl border-2 bg-white p-5 shadow-sm transition hover:shadow-lg ${p.id === 'growth' ? 'border-orange-500 shadow-lg shadow-orange-500/20 lg:-translate-y-2' : 'border-slate-200'}`}>{p.id === 'growth' && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-orange-500 to-amber-400 px-3 py-1 text-xs font-black text-white shadow">MOST POPULAR</span>}<h3 className="font-bold text-[#0f2447]">{p.name}</h3><p className="mt-1 text-3xl font-black text-[#0f2447]">${p.monthly}<span className="text-sm font-normal text-slate-500">/mo</span></p><p className="text-xs text-slate-500">{p.leads} · {p.ai}</p><ul className="mt-3 flex-1 space-y-1.5 text-sm text-slate-600">{p.features.map(f => <li key={f} className="flex gap-2"><Icon d={ICONS.check} cls="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />{f}</li>)}</ul><Btn onClick={() => setView('auth')} variant={p.id === 'growth' ? 'primary' : 'outline'}>Choose {p.name}</Btn></div>)}</div></section>
         {!isSupabaseConfigured && <p className="mt-6 rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">Setup notice: Supabase is not configured yet in this deployment. Sign-up and saved data will work only after VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY are set. See README.md.</p>}
       </main>
-      <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300"><div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-3"><div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-1 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p></div><div><p className="font-bold text-white">Built for</p><p className="mt-1 flex flex-wrap gap-2 text-sm">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-white/10 px-3 py-1 font-semibold text-slate-200 transition hover:bg-orange-500 hover:text-white">{INDUSTRY_DETAILS[i].short}</button>)}</p></div><div><p className="font-bold text-white">Get started</p><p className="mt-1 text-sm">Start free trial — from $49/mo. No card charged without your approval.</p></div></div><p className="mt-8 border-t border-white/10 pt-4 text-center text-xs text-slate-500">NiketDigital.ai — Built for US roofing, remodeling, construction &amp; pest control businesses.</p></footer>
+      <SiteFooter go={(v) => setView(v)} openIndustry={openIndustry} />
     </div>
   )
 
+
+
+  // ---- About / Privacy / Terms / Contact ----
+  if (view === 'about' || view === 'privacy' || view === 'terms' || view === 'contact') {
+    const titles: Record<string, [string, string]> = {
+      about: ['About Us', 'Who we are and what NiketDigital.ai does for contractors.'],
+      privacy: ['Privacy Policy', 'How we handle your information.'],
+      terms: ['Terms of Service', 'The rules for using NiketDigital.ai.'],
+      contact: ['Contact Us', 'Get in touch with the NiketDigital team.'],
+    }
+    const [title, sub] = titles[view]
+    return (
+    <div className="min-h-screen bg-slate-50">
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
+          <button onClick={() => setView('landing')} className="flex items-center gap-2 text-left"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] text-lg font-black text-orange-400">N</span><span><span className="block text-xl font-black leading-none text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><span className="text-[11px] text-slate-500">Your AI-Powered Business Growth Partner</span></span></button>
+          <nav className="flex flex-wrap gap-1 text-sm font-medium text-slate-600">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-slate-100 px-3 py-1 transition hover:bg-orange-100 hover:text-orange-700">{INDUSTRY_DETAILS[i].short}</button>)}</nav>
+          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+        </div>
+      </header>
+      <main className="mx-auto max-w-3xl px-4 pb-16">
+        <button onClick={() => setView('landing')} className="mt-4 text-sm font-bold text-[#0f2447] hover:text-orange-600">← Back to home</button>
+        <div className="mt-4 rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
+          <h1 className="text-3xl font-black text-[#0f2447]">{title}</h1>
+          <p className="mt-1 text-sm text-slate-500">{sub}</p>
+          {view === 'about' && <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+            <p><strong>NiketDigital.ai — Your AI-Powered Business Growth Partner.</strong> We build AI-powered growth tools for US roofing, remodeling, construction and pest control businesses.</p>
+            <p>Many contractors are great at their trade but do not have time — or technical knowledge — for websites, ads and follow-ups. NiketDigital.ai brings it together in one simple platform: order a professional AI-built website, generate ad copy and landing pages with the AI Marketing Assistant, create Meta and Google Ads drafts, and track every lead from New to Won in the CRM.</p>
+            <p>Our promise is simple: real numbers only, no invented results. Reports come from your saved leads and your connected ad accounts. Campaigns are always created as drafts, paused by default, and nothing is published, and nothing is charged, without your explicit approval.</p>
+            <p>Plans start at $49/month. Website development is priced separately from the monthly subscription, and advertising budgets are billed separately by Meta and Google.</p>
+          </div>}
+          {view === 'privacy' && <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+            <p><strong>What we collect.</strong> When you create an account we store your email address and password (handled securely by Supabase Auth). When you complete onboarding we store your business profile — business name, industry, contact details, services and service locations. When you use the platform we store the leads, website orders and support tickets you create.</p>
+            <p><strong>Connected accounts.</strong> If you choose to connect Meta, Google Ads or Stripe, we store only the connection details needed to work with those services, using official OAuth. We never ask for, and never store, your Meta or Google account password. Card details are handled by Stripe on its secure pages — this app never sees or stores raw card numbers.</p>
+            <p><strong>How we use it.</strong> Your data is used only to run your account, show your dashboard, generate the marketing content you ask for, and reply to support tickets. Your business data is yours — other customers cannot see it.</p>
+            <p><strong>Your choices.</strong> You can update your business profile at any time, export your leads as a CSV from the CRM, and ask us to close your account through the Support Center. If you have questions about this policy, raise a ticket in the Support Center after signing in.</p>
+            <p className="text-xs text-slate-500">Last updated: November 2026.</p>
+          </div>}
+          {view === 'terms' && <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+            <p><strong>Plans and billing.</strong> Subscriptions are Starter $49/month, Growth $99/month, Professional $199/month, Agency $399/month, billed monthly or annually through Stripe. Annual billing uses the lower monthly rate shown on the pricing page. You can upgrade, downgrade or cancel at any time; changes take effect as Stripe confirms them.</p>
+            <p><strong>Website development is priced separately.</strong> Ordering a website starts with a quotation — nothing is charged for a website until you approve the quotation. Website order statuses run from New Order to Published.</p>
+            <p><strong>Advertising.</strong> Meta and Google campaigns are created as drafts, paused by default. Nothing is published, and no advertising budget is changed, without your explicit confirmation. Advertising budgets are billed separately by Meta and Google, not by NiketDigital.ai.</p>
+            <p><strong>No charge without authorisation.</strong> We never charge your card without your approval. You are responsible for keeping your account details safe and for the accuracy of the business information and leads you enter.</p>
+            <p><strong>Fair use.</strong> AI generations and leads are limited by your plan. Do not use the platform for unlawful, misleading or harmful content. We may suspend accounts that break these terms.</p>
+          </div>}
+          {view === 'contact' && <div className="mt-4">
+            <p className="text-sm leading-relaxed text-slate-700">The fastest way to reach us is the <strong>Support Center inside the app</strong> — sign in, open Support Center, and raise a ticket. The team will reply by email.</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">You can also use the form below to write your message, then send it through the Support Center after signing in. We do not publish a phone number or email address on this page.</p>
+            <form onSubmit={e => { e.preventDefault(); setContactSent('Thanks — your message is ready. Please sign in and send it through the Support Center, and the team will reply by email.') }} className="mt-4 space-y-3">
+              <Input label="Your name" value={contactName} onChange={setContactName} required />
+              <Input label="Your email" type="email" value={contactEmail} onChange={setContactEmail} required />
+              <label className="block text-sm font-medium text-slate-700">Message<textarea value={contactMsgText} onChange={e => setContactMsgText(e.target.value)} required rows={4} className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></label>
+              <Btn type="submit">Prepare message</Btn>
+            </form>
+            {contactSent && <p className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{contactSent}</p>}
+          </div>}
+          <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('landing')}>Back to home</Btn><Btn variant="outline" onClick={() => setView('auth')}>Start free trial</Btn></div>
+        </div>
+      </main>
+      <SiteFooter go={(v) => setView(v)} openIndustry={openIndustry} />
+    </div>
+    )
+  }
 
   // ---- Industry detail ----
   if (view === 'industry') {
@@ -242,7 +373,7 @@ export default function App() {
         </section>
         <section className="mt-10 rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200 sm:p-8"><h2 className="text-2xl font-black text-[#0f2447]">Ready to grow your {d.short.toLowerCase()} business?</h2><p className="mx-auto mt-2 max-w-xl text-sm text-slate-600">Plans from $49/mo — Starter $49, Growth $99, Professional $199, Agency $399. Website development is priced separately from the monthly subscription, and ad budgets are billed separately by Meta / Google.</p><div className="mt-5 flex flex-wrap justify-center gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('landing')}>Back to home</Btn></div></section>
       </main>
-      <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300"><div className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-3"><div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-1 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p></div><div><p className="font-bold text-white">Built for</p><p className="mt-1 flex flex-wrap gap-2 text-sm">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className="rounded-full bg-white/10 px-3 py-1 font-semibold text-slate-200 transition hover:bg-orange-500 hover:text-white">{INDUSTRY_DETAILS[i].short}</button>)}</p></div><div><p className="font-bold text-white">Get started</p><p className="mt-1 text-sm">Start free trial — from $49/mo. No card charged without your approval.</p></div></div><p className="mt-8 border-t border-white/10 pt-4 text-center text-xs text-slate-500">NiketDigital.ai — Built for US roofing, remodeling, construction &amp; pest control businesses.</p></footer>
+      <SiteFooter go={(v) => setView(v)} openIndustry={openIndustry} />
     </div>
     )
   }
