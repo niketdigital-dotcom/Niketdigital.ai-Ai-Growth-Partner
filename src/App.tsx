@@ -93,14 +93,14 @@ export const INDUSTRY_DETAILS: Record<Industry, { short: string; tagline: string
   },
 }
 
-type View = 'landing' | 'industry' | 'about' | 'privacy' | 'terms' | 'contact' | 'auth' | 'onboarding' | 'dashboard' | 'website' | 'ai' | 'meta' | 'google' | 'campaigns' | 'crm' | 'analytics' | 'billing' | 'integrations' | 'support' | 'admin'
+type View = 'landing' | 'industry' | 'about' | 'privacy' | 'terms' | 'contact' | 'auth' | 'onboarding' | 'dashboard' | 'website' | 'ai' | 'creative' | 'meta' | 'google' | 'campaigns' | 'crm' | 'analytics' | 'billing' | 'integrations' | 'support' | 'admin'
 type Business = { id?: string; business_name: string; industry: string; business_email: string; phone: string; website: string; service_locations: string; address: string; services: string; logo_url: string }
 type Lead = { id: string; name: string; email: string; phone: string; source: string; status: string; notes: string; created_at?: string }
 type Order = { id: string; business_name: string; industry: string; design_style: string; status: string; created_at?: string }
 
 const NAV: { id: View; label: string }[] = [
   { id: 'dashboard', label: 'Dashboard' }, { id: 'website', label: 'Website Development' },
-  { id: 'ai', label: 'AI Marketing Assistant' }, { id: 'meta', label: 'Facebook & Instagram Ads' },
+  { id: 'ai', label: 'AI Marketing Assistant' }, { id: 'creative', label: 'AI Ad Creative Studio' }, { id: 'meta', label: 'Facebook & Instagram Ads' },
   { id: 'google', label: 'Google Ads' }, { id: 'campaigns', label: 'Campaigns' },
   { id: 'crm', label: 'Lead CRM' }, { id: 'analytics', label: 'Analytics & Reports' },
   { id: 'billing', label: 'Subscription & Billing' }, { id: 'integrations', label: 'Integrations' },
@@ -452,8 +452,9 @@ export default function App() {
     <Card title="Recent website orders" sub="Website development is priced separately from your subscription."><OrdersList orders={orders} /></Card></>)
   if (view === 'website') return shell('AI Website Development', 'Choose your industry, style and pages, preview the concept, then submit an order. You will receive a quotation before any payment is requested.', <WebsiteOrder business={business} onSubmitted={(o: Order) => { setOrders([o, ...orders]); setMsg('Website order submitted. Status: New Order. A quotation will follow — nothing is charged yet.') }} />)
   if (view === 'ai') return shell('AI Marketing Assistant', 'Generate ad copy, keywords, landing-page content and local ideas for your trade. AI never publishes anything.', <AiAssistant api={api} business={business} />)
+  if (view === 'creative') return shell('AI Ad Creative Studio', 'Create professional ad images for any platform — real AI generation, no stock photos passed off as generated.', <CreativeStudio api={api} business={business} />)
   if (view === 'meta') return shell('Facebook & Instagram Ads', 'Connect your Meta account with official OAuth. Campaigns are created as drafts / paused by default and need your explicit approval before publishing.', <IntegrationPanel provider="Meta" statusPath="/api/meta/status" connectPath="/api/auth/meta/start" api={api} />)
-  if (view === 'google') return shell('Google Ads', 'Connect Google Ads with official OAuth. Search campaigns are drafts only until you confirm them.', <IntegrationPanel provider="Google Ads" statusPath="/api/google-ads/status" connectPath="/api/auth/google/start" api={api} />)
+  if (view === 'google') return shell('Google Ads', 'Connect Google Ads with official OAuth. Search campaigns are drafts only until you confirm them.', <><IntegrationPanel provider="Google Ads" statusPath="/api/google-ads/status" connectPath="/api/auth/google/start" api={api} /><GoogleAdAccounts /></>)
   if (view === 'campaigns') return shell('Campaign Management', 'Campaign drafts live here. Nothing is published or spends budget without your explicit approval.', <Campaigns api={api} />)
   if (view === 'crm') return shell('Lead Management CRM', 'Capture leads, track status, follow up, and export. Lead statuses: New → Contacted → Qualified → Estimate Scheduled → Proposal Sent → Won / Lost.', <Crm leads={leads} setLeads={setLeads} user={user} />)
   if (view === 'analytics') return shell('Analytics & Reporting', 'Reports are calculated only from your saved leads and from connected ad accounts. No invented metrics are shown.', <Card title="Your numbers" sub="Add leads and connect an ad account to see reporting here."><Empty text="No analytics yet — add leads in the CRM or connect Meta / Google Ads to see real performance here." /></Card>)
@@ -540,6 +541,186 @@ function WebsiteOrder({ business, onSubmitted }: { business: Business; onSubmitt
   </Card>
 }
 
+const CREATIVE_PLATFORMS = [
+  { id: 'facebook', label: 'Facebook Ads' }, { id: 'instagram', label: 'Instagram Ads' },
+  { id: 'google', label: 'Google Ads' }, { id: 'linkedin', label: 'LinkedIn Ads' },
+  { id: 'tiktok', label: 'TikTok Ads' }, { id: 'pinterest', label: 'Pinterest Ads' },
+  { id: 'youtube', label: 'YouTube Ads' },
+]
+const CREATIVE_SIZES = [
+  { id: 'square', label: 'Square · 1080 × 1080', ratio: '1 / 1' },
+  { id: 'portrait', label: 'Portrait · 1080 × 1350', ratio: '4 / 5' },
+  { id: 'story', label: 'Story / Reels · 1080 × 1920', ratio: '9 / 16' },
+  { id: 'landscape', label: 'Landscape · 1200 × 628', ratio: '1200 / 628' },
+]
+const CREATIVE_STYLES = [
+  { id: 'professional', label: 'Professional Business Ads' }, { id: 'realistic', label: 'Realistic Product Photography' },
+  { id: 'luxury', label: 'Luxury Advertising' }, { id: 'modern', label: 'Modern Promotional Ads' },
+  { id: 'minimalist', label: 'Minimalist Advertising' }, { id: 'lifestyle', label: 'Lifestyle Advertising' },
+  { id: 'before_after', label: 'Before & After Ads' }, { id: 'ecommerce', label: 'E-commerce Product Ads' },
+  { id: 'local', label: 'Local Business Ads' }, { id: 'seasonal', label: 'Seasonal Promotional Ads' },
+]
+type GenImage = { b64: string; sizeLabel: string; actualSize: string; prompt: string; revisedPrompt?: string | null }
+
+function CreativeStudio({ api, business }: { api: (p: string, b?: unknown) => Promise<any>; business: Business }) {
+  const [businessName, setBusinessName] = useState(business.business_name || '')
+  const [industry, setIndustry] = useState(business.industry || 'Roofing')
+  const [product, setProduct] = useState('')
+  const [audience, setAudience] = useState('')
+  const [country, setCountry] = useState('United States')
+  const [platform, setPlatform] = useState('facebook')
+  const [style, setStyle] = useState('professional')
+  const [size, setSize] = useState('square')
+  const [variations, setVariations] = useState(1)
+  const [customPrompt, setCustomPrompt] = useState('')
+  const [brandColor1, setBrandColor1] = useState('#0f2447')
+  const [brandColor2, setBrandColor2] = useState('#f97316')
+  const [background, setBackground] = useState('')
+  const [productImage, setProductImage] = useState('')
+  const [logo, setLogo] = useState(business.logo_url || '')
+  const [showLogo, setShowLogo] = useState(!!business.logo_url)
+  const [images, setImages] = useState<GenImage[]>([])
+  const [selected, setSelected] = useState(0)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const [note, setNote] = useState('')
+  const [editPrompt, setEditPrompt] = useState('')
+  const [showEditPrompt, setShowEditPrompt] = useState(false)
+  const sizeInfo = CREATIVE_SIZES.find(s => s.id === size) || CREATIVE_SIZES[0]
+  const sel = images[selected]
+
+  function fileToDataUrl(file: File, maxDim: number, jpeg: boolean): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const im = new Image()
+        im.onload = () => {
+          const scale = Math.min(1, maxDim / Math.max(im.naturalWidth, im.naturalHeight))
+          const canvas = document.createElement('canvas')
+          canvas.width = Math.max(1, Math.round(im.naturalWidth * scale))
+          canvas.height = Math.max(1, Math.round(im.naturalHeight * scale))
+          const ctx = canvas.getContext('2d')
+          if (!ctx) { reject(new Error('Canvas is not available in this browser.')); return }
+          ctx.drawImage(im, 0, 0, canvas.width, canvas.height)
+          resolve(canvas.toDataURL(jpeg ? 'image/jpeg' : 'image/png', 0.85))
+        }
+        im.onerror = () => reject(new Error('Could not read that image file.'))
+        im.src = String(reader.result)
+      }
+      reader.onerror = () => reject(new Error('Could not read that file.'))
+      reader.readAsDataURL(file)
+    })
+  }
+  async function onFile(e: React.ChangeEvent<HTMLInputElement>, kind: 'product' | 'logo') {
+    const f = e.target.files?.[0]; if (!f) return
+    try {
+      const url = await fileToDataUrl(f, kind === 'product' ? 1024 : 512, kind === 'product')
+      if (kind === 'product') setProductImage(url); else { setLogo(url); setShowLogo(true) }
+      setErr('')
+    } catch (ex: any) { setErr(ex?.message || 'Could not read that file.') }
+    e.target.value = ''
+  }
+  async function generate(over: Record<string, unknown> = {}) {
+    setErr(''); setNote(''); setBusy(true)
+    try {
+      const body = {
+        businessName, industry, product, audience, country,
+        platform: (over.platform as string) || platform,
+        style: (over.style as string) || style,
+        size, variations,
+        customPrompt, brandColor1, brandColor2,
+        background: (over.background as string) ?? background,
+        productImageB64: productImage || undefined,
+        baseImageB64: (over.baseImageB64 as string) || undefined,
+        promptOverride: (over.promptOverride as string) || undefined,
+      }
+      const j = await api('/api/ai-image', body)
+      if (j.error) { setErr(j.error); return }
+      if (!j.images?.length) { setErr('The AI returned no images. Try again.'); return }
+      setImages(j.images); setSelected(0)
+      setEditPrompt(j.prompt || '')
+      setNote(j.note || '')
+    } catch (e: any) { setErr(e?.message || 'Generation failed.') }
+    finally { setBusy(false) }
+  }
+  function loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => { const im = new Image(); im.onload = () => resolve(im); im.onerror = () => reject(new Error('Image could not be loaded.')); im.src = src })
+  }
+  async function downloadImage(format: 'png' | 'jpg', withLogo: boolean) {
+    if (!sel) return
+    setErr('')
+    try {
+      const el = await loadImage(`data:image/png;base64,${sel.b64}`)
+      const canvas = document.createElement('canvas')
+      canvas.width = el.naturalWidth; canvas.height = el.naturalHeight
+      const ctx = canvas.getContext('2d')
+      if (!ctx) { setErr('Download is not available in this browser.'); return }
+      if (format === 'jpg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height) }
+      ctx.drawImage(el, 0, 0)
+      if (withLogo && logo) {
+        try {
+          const lg = await loadImage(logo)
+          const w = canvas.width * 0.2
+          const h = (lg.naturalHeight / lg.naturalWidth) * w
+          const pad = canvas.width * 0.03
+          ctx.drawImage(lg, canvas.width - w - pad, canvas.height - h - pad, w, h)
+        } catch { setErr('Your logo could not be added to the download — upload the logo file directly instead of using a web link (the linked file blocks downloads).'); return }
+      }
+      const url = format === 'jpg' ? canvas.toDataURL('image/jpeg', 0.92) : canvas.toDataURL('image/png')
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${(businessName || 'ad').replace(/[^a-z0-9]+/gi, '-').toLowerCase()}-${size}-${selected + 1}${withLogo ? '-logo' : ''}.${format}`
+      a.click()
+    } catch (e: any) { setErr(e?.message || 'Download failed.') }
+  }
+  return <div className="grid items-start gap-4 lg:grid-cols-[380px_minmax(0,1fr)]">
+    <Card title="Ad settings" sub="Describe the ad — the AI builds the image from this.">
+      <div className="grid gap-3">
+        <Input label="Business name" value={businessName} onChange={setBusinessName} placeholder="e.g. Summit Ridge Roofing Co." />
+        <Input label="Business industry" value={industry} onChange={setIndustry} placeholder="e.g. Roofing" />
+        <Input label="Product / service name" value={product} onChange={setProduct} placeholder="e.g. Free roof inspection" />
+        <Input label="Target audience" value={audience} onChange={setAudience} placeholder="e.g. Homeowners aged 35–65" />
+        <Input label="Target country" value={country} onChange={setCountry} placeholder="e.g. United States" />
+        <label className="block text-sm font-medium">Advertising platform<select value={platform} onChange={e => setPlatform(e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2">{CREATIVE_PLATFORMS.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}</select></label>
+        <label className="block text-sm font-medium">Image style<select value={style} onChange={e => setStyle(e.target.value)} className="mt-1 w-full rounded-lg border px-3 py-2">{CREATIVE_STYLES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>
+        <fieldset><legend className="text-sm font-semibold">Image size</legend><div className="mt-2 flex flex-wrap gap-2">{CREATIVE_SIZES.map(s => <button type="button" key={s.id} onClick={() => setSize(s.id)} className={`rounded-full border px-3 py-1 text-xs font-semibold ${size === s.id ? 'bg-[#0f2447] text-white' : 'bg-white'}`}>{s.label}</button>)}</div><p className="mt-1 text-xs text-slate-500">The AI returns the closest supported size — shown under the preview after generating.</p></fieldset>
+        <fieldset><legend className="text-sm font-semibold">Variations</legend><div className="mt-2 flex gap-2">{[1, 2, 4].map(n => <button type="button" key={n} onClick={() => setVariations(n)} className={`rounded-full border px-4 py-1 text-xs font-semibold ${variations === n ? 'bg-[#0f2447] text-white' : 'bg-white'}`}>{n} image{n > 1 ? 's' : ''}</button>)}</div></fieldset>
+        <div><label className="block text-sm font-medium">Custom AI prompt<textarea value={customPrompt} onChange={e => setCustomPrompt(e.target.value)} rows={3} placeholder="e.g. Show a happy family on a new roof at sunset, bold headline space at the top" className="mt-1 w-full rounded-lg border px-3 py-2 text-sm" /></label></div>
+        <div><label className="block text-sm font-medium">Upload product image <span className="font-normal text-slate-500">(optional — the AI builds the ad around your real product)</span><input type="file" accept="image/*" onChange={e => onFile(e, 'product')} className="mt-1 w-full text-sm" /></label>{productImage && <div className="mt-2 flex items-center gap-2"><img src={productImage} alt="Product" className="h-14 w-14 rounded-lg object-cover ring-1 ring-slate-200" /><button type="button" className="text-xs font-semibold text-red-600" onClick={() => setProductImage('')}>Remove</button></div>}</div>
+        <div><label className="block text-sm font-medium">Upload brand logo <span className="font-normal text-slate-500">(added on top when you download)</span><input type="file" accept="image/*" onChange={e => onFile(e, 'logo')} className="mt-1 w-full text-sm" /></label>{logo && <div className="mt-2 flex items-center gap-2"><img src={logo} alt="Logo" className="h-14 w-14 rounded-lg object-contain bg-white ring-1 ring-slate-200" /><button type="button" className="text-xs font-semibold text-red-600" onClick={() => { setLogo(''); setShowLogo(false) }}>Remove</button><label className="ml-2 flex items-center gap-1 text-xs"><input type="checkbox" checked={showLogo} onChange={e => setShowLogo(e.target.checked)} /> Show logo on preview</label></div>}</div>
+        <div className="flex items-center gap-3"><label className="flex items-center gap-2 text-sm font-medium">Brand color 1 <input type="color" value={brandColor1} onChange={e => setBrandColor1(e.target.value)} className="h-8 w-10 cursor-pointer rounded border" /></label><label className="flex items-center gap-2 text-sm font-medium">Brand color 2 <input type="color" value={brandColor2} onChange={e => setBrandColor2(e.target.value)} className="h-8 w-10 cursor-pointer rounded border" /></label><span className="text-xs text-slate-500">{brandColor1} · {brandColor2}</span></div>
+        <Btn onClick={() => generate()}>{busy ? 'Generating… please wait' : '✦ Generate AI Ad Image'}</Btn>
+        {err && <p className="text-sm text-red-600">{err}</p>}
+        <p className="text-xs text-slate-500">Each image counts toward your plan&apos;s AI generation limit. Real AI images only — if the AI key is missing, you will see an error, never a fake image.</p>
+      </div>
+    </Card>
+    <div className="grid gap-4">
+      <Card title="Preview" sub={sel ? `${sel.sizeLabel} · generated at ${sel.actualSize}` : 'Your generated ad will appear here.'}>
+        {busy && <div className="space-y-3"><div className="h-72 animate-pulse rounded-2xl bg-gradient-to-br from-slate-200 via-orange-100 to-slate-200" /><div className="h-4 w-2/3 animate-pulse rounded bg-slate-200" /><p className="text-sm text-slate-500">✦ Generating {variations} image{variations > 1 ? 's' : ''}… AI image generation takes about 20–60 seconds. Please keep this tab open.</p></div>}
+        {!busy && !sel && <div className="flex h-72 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 text-center"><span className="text-4xl">🖼️</span><p className="mt-2 max-w-xs text-sm text-slate-500">Fill in the settings on the left and click <strong>Generate AI Ad Image</strong> to create your first ad.</p></div>}
+        {!busy && sel && <div>
+          <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-2xl ring-1 ring-slate-200" style={{ aspectRatio: sizeInfo.ratio }}>
+            <img src={`data:image/png;base64,${sel.b64}`} alt="Generated ad" className="absolute inset-0 h-full w-full object-cover" />
+            {showLogo && logo && <img src={logo} alt="Brand logo" onError={() => setShowLogo(false)} className="absolute bottom-3 right-3 w-[20%] rounded bg-white/90 p-1 shadow" />}
+          </div>
+          {note && <p className="mt-2 text-xs text-slate-500">{note}</p>}
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Btn onClick={() => downloadImage('png', false)}>Download PNG</Btn>
+            <Btn variant="outline" onClick={() => downloadImage('jpg', false)}>Download JPG</Btn>
+            {logo && <Btn variant="outline" onClick={() => downloadImage('png', true)}>Download PNG with logo</Btn>}
+            <Btn variant="outline" onClick={() => generate()}>↻ Regenerate</Btn>
+            <Btn variant="outline" onClick={() => { setEditPrompt(sel.prompt); setShowEditPrompt(v => !v) }}>{showEditPrompt ? 'Hide prompt editor' : 'Edit image prompt'}</Btn>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center gap-2"><Input label="Change background" value={background} onChange={setBackground} placeholder="e.g. a bright modern kitchen" /><Btn variant="outline" onClick={() => sel && generate({ baseImageB64: sel.b64 })}>Apply new background</Btn></div>
+          <p className="mt-2 text-xs text-slate-500">Changing the background re-creates this image with the same product and layout — only the background changes.</p>
+          {showEditPrompt && <div className="mt-3"><label className="block text-sm font-medium">Image prompt (edit, then regenerate)<textarea value={editPrompt} onChange={e => setEditPrompt(e.target.value)} rows={5} className="mt-1 w-full rounded-lg border px-3 py-2 text-sm" /></label><div className="mt-2 flex gap-2"><Btn onClick={() => generate({ promptOverride: editPrompt })}>Regenerate with this prompt</Btn><Btn variant="outline" onClick={() => { setEditPrompt(sel.prompt); setShowEditPrompt(false) }}>Reset</Btn></div></div>}
+        </div>}
+      </Card>
+      {images.length > 1 && <Card title="Gallery" sub="Click an image to preview it."><div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{images.map((im, i) => <button type="button" key={i} onClick={() => setSelected(i)} className={`overflow-hidden rounded-xl ring-2 ${i === selected ? 'ring-orange-500' : 'ring-slate-200'}`}><img src={`data:image/png;base64,${im.b64}`} alt={`Variation ${i + 1}`} className="aspect-square w-full object-cover" /><span className="block bg-white py-1 text-center text-xs font-semibold">Variation {i + 1}</span></button>)}</div></Card>}
+    </div>
+  </div>
+}
+
 function AiAssistant({ api, business }: { api: (p: string, b?: unknown) => Promise<any>; business: Business }) {
   const [kind, setKind] = useState('ad_copy'); const [prompt, setPrompt] = useState(''); const [out, setOut] = useState(''); const [busy, setBusy] = useState(false)
   const [vars, setVars] = useState<{ angle?: string; primaryText?: string; headline?: string; description?: string; callToAction?: string }[]>([])
@@ -580,6 +761,31 @@ function IntegrationPanel({ provider, statusPath, connectPath, api }: { provider
   useEffect(() => { (async () => { const { data } = await supabase.auth.getSession(); const token = data.session?.access_token || ''; const url = token ? `${statusPath}?access_token=${encodeURIComponent(token)}` : statusPath; fetch(url).then(r => r.json()).then(j => setStatus(j.connected ? `Connected${j.scopes ? ` — scopes: ${j.scopes}` : ''}` : j.error ? `Not connected — ${j.error}` : 'Not connected')).catch(() => setStatus('Not connected — status check failed (server may not be configured yet).')) })() }, [statusPath])
   const connect = async () => { const { data } = await supabase.auth.getSession(); const token = data.session?.access_token || ''; if (!token) { setStatus('Not connected — sign in first, then click Connect.'); return }; window.location.href = `${connectPath}?access_token=${encodeURIComponent(token)}` }
   return <Card title={`${provider} — connection`} sub="Official OAuth only. Never share your ad-account password with this app."><p className="text-sm"><strong>Status:</strong> {status}</p><div className="mt-3 flex gap-2"><button type="button" className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white" onClick={connect}>Connect {provider} account</button>{provider === 'Meta' && <Btn variant="outline" onClick={async () => { const j = await api('/api/auth/meta/disconnect', {}); setStatus(j.ok ? 'Not connected' : `Error: ${j.error || 'disconnect failed'}`) }}>Disconnect</Btn>}</div><p className="mt-3 text-xs text-slate-500">After connecting, choose an ad account, then create drafts. Publishing needs your explicit confirmation on the Campaigns page.</p></Card>
+}
+
+function GoogleAdAccounts() {
+  const [accounts, setAccounts] = useState<{ id: string; name: string; currency: string | null }[]>([])
+  const [msg, setMsg] = useState('Loading your Google Ads accounts…')
+  async function load() {
+    setMsg('Loading your Google Ads accounts…')
+    const { data } = await supabase.auth.getSession()
+    const token = data.session?.access_token || ''
+    if (!token) { setMsg('Sign in first, then refresh.'); return }
+    try {
+      const r = await fetch(`/api/google-ads/ad-accounts?access_token=${token}`)
+      const j = await r.json()
+      if (j.error) { setMsg(`Could not load Google Ads accounts: ${j.error}${j.hint ? ` ${j.hint}` : ''}`); return }
+      if (!j.connected) { setMsg(j.needsReconnect ? 'Google sign-in expired. Reconnect Google Ads in Integrations, then refresh.' : 'Google Ads is not connected. Connect it above first.'); return }
+      setAccounts(j.accounts || [])
+      if ((j.accounts || []).length) setMsg('')
+      else setMsg('No Google Ads accounts found on this Google login. Check in Google Ads that this Google user has access to an account, then refresh.')
+    } catch { setMsg('Could not reach the server. Try refresh.') }
+  }
+  useEffect(() => { load() }, [])
+  return <Card title="Your Google Ads accounts" sub="These come live from Google Ads (Explorer Access: 2,880 operations/day on real accounts). Read-only — campaigns stay drafts only.">
+    {msg ? <p className="text-sm text-slate-600">{msg}</p> : <ul className="space-y-2">{accounts.map(a => <li key={a.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"><span><strong>{a.name}</strong> · {a.id}{a.currency ? ` (${a.currency})` : ''}</span></li>)}</ul>}
+    <div className="mt-3"><Btn variant="outline" onClick={load}>Refresh Google Ads accounts</Btn></div>
+  </Card>
 }
 
 function Campaigns({ api }: { api: (p: string, b?: unknown) => Promise<any> }) {
