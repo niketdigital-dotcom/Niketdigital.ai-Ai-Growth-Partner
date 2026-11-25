@@ -13,15 +13,15 @@ export const LEAD_STATUSES = ['New', 'Contacted', 'Qualified', 'Estimate Schedul
 export const WEBSITE_PAGES = ['Home', 'About Us', 'Services', 'Roofing Services', 'Roof Replacement', 'Roof Repair', 'Kitchen Remodeling', 'Bathroom Remodeling', 'Pest Control Services', 'Service Areas', 'Gallery', 'Contact Us']
 export const DESIGN_STYLES = ['Modern & Clean', 'Bold & Professional', 'Warm & Trustworthy', 'Premium & Minimal']
 export const PLANS = [
-  { id: 'starter', name: 'Starter', monthly: 49, annualMonthly: 39, leads: 'Up to 100 leads / mo', ai: '50 AI generations / mo', features: ['AI Marketing Assistant', 'Lead CRM', '1 website order discount', 'Email support'] },
-  { id: 'growth', name: 'Growth', monthly: 99, annualMonthly: 79, leads: 'Up to 500 leads / mo', ai: '200 AI generations / mo', features: ['Everything in Starter', 'Meta + Google Ads drafts', 'Campaign reporting', 'Priority support'] },
-  { id: 'professional', name: 'Professional', monthly: 199, annualMonthly: 159, leads: 'Up to 2,000 leads / mo', ai: '750 AI generations / mo', features: ['Everything in Growth', 'AI automation workflows', 'Advanced analytics', 'Monthly marketing report'] },
-  { id: 'agency', name: 'Agency', monthly: 399, annualMonthly: 319, leads: 'Unlimited leads', ai: 'Unlimited AI generations', features: ['Everything in Professional', 'Multiple businesses', 'White-label reports', 'Dedicated support'] },
+  { id: 'starter', name: 'Starter', monthly: 59, annualMonthly: 49, leads: 'Up to 100 leads / mo', ai: '50 AI generations / mo', features: ['AI Marketing Assistant', 'Lead CRM', '1 website order discount', 'Email support'] },
+  { id: 'growth', name: 'Growth', monthly: 149, annualMonthly: 119, leads: 'Up to 500 leads / mo', ai: '200 AI generations / mo', features: ['Everything in Starter', 'Meta + Google Ads drafts', 'Campaign reporting', 'Priority support'] },
+  { id: 'professional', name: 'Professional', monthly: 249, annualMonthly: 199, leads: 'Up to 2,000 leads / mo', ai: '750 AI generations / mo', features: ['Everything in Growth', 'AI automation workflows', 'Advanced analytics', 'Monthly marketing report'] },
+  { id: 'agency', name: 'Agency', monthly: 499, annualMonthly: 399, leads: 'Unlimited leads', ai: 'Unlimited AI generations', features: ['Everything in Professional', 'Multiple businesses', 'White-label reports', 'Dedicated support'] },
 ] as const
 
 
 /* All services of the NiketDigital.ai tool — shown on the home page.
-   Stripe Billing and Super-Admin are NOT listed here (they stay inside the
+   Billing (PayPal / Razorpay) and Super-Admin are NOT listed here (they stay inside the
    app only, in the Billing and Admin dashboard views). */
 const U = (id: string) => `https://images.unsplash.com/${id}?w=1200&q=80&auto=format&fit=crop`
 export const ALL_SERVICES: { title: string; desc: string; benefit: string; icon: string; grad: string; tint: string; img: string; target: View }[] = [
@@ -32,7 +32,7 @@ export const ALL_SERVICES: { title: string; desc: string; benefit: string; icon:
   { title: 'Campaign Management', desc: 'See all your campaign drafts in one place. Nothing is published, and no budget is changed, without your explicit confirmation.', benefit: 'Every campaign, draft and budget in one clear place — no surprises.', icon: 'rocket', grad: 'from-rose-500 to-pink-600', tint: 'bg-rose-100 text-rose-700', img: U('photo-1504307651254-35680f356dfd'), target: 'campaigns' },
   { title: 'Lead CRM', desc: 'Capture every lead and track it from New to Won — Contacted, Qualified, Estimate Scheduled, Proposal Sent — with CSV export.', benefit: 'No lead is forgotten — follow up on time and win more jobs.', icon: 'users', grad: 'from-[#0f2447] to-[#274e96]', tint: 'bg-slate-200 text-[#0f2447]', img: U('photo-1521791136064-7986c2920216'), target: 'crm' },
   { title: 'Analytics & Reporting', desc: 'Reports calculated only from your saved leads and connected ad accounts. No invented numbers — empty means no data yet.', benefit: 'See exactly where your leads and jobs come from, every month.', icon: 'chart', grad: 'from-cyan-500 to-sky-600', tint: 'bg-cyan-100 text-cyan-700', img: U('photo-1460925895917-afdab827c52f'), target: 'analytics' },
-  { title: 'Integrations', desc: 'Connect Meta, Google Ads and Stripe with official OAuth. A connection is only shown as connected after a successful live check.', benefit: 'Your ad accounts and payments connect securely, in a few clicks.', icon: 'link', grad: 'from-amber-500 to-orange-600', tint: 'bg-amber-100 text-amber-700', img: U('photo-1519389950473-47ba0277781c'), target: 'integrations' },
+  { title: 'Integrations', desc: 'Connect Meta, Google Ads, PayPal and Razorpay. A connection is only shown as connected after a successful live check.', benefit: 'Your ad accounts and payments connect securely, in a few clicks.', icon: 'link', grad: 'from-amber-500 to-orange-600', tint: 'bg-amber-100 text-amber-700', img: U('photo-1519389950473-47ba0277781c'), target: 'integrations' },
   { title: 'Support Center', desc: 'Raise a support ticket from inside the app and the NiketDigital team will reply by email.', benefit: 'Help from a real team whenever you are stuck.', icon: 'headset', grad: 'from-teal-500 to-emerald-600', tint: 'bg-teal-100 text-teal-700', img: U('photo-1600880292203-757bb62b4baf'), target: 'support' },
   { title: 'AI Automation', desc: 'Automation workflows that save time on follow-ups and reporting — part of the Professional and Agency plans.', benefit: 'Follow-ups and reports happen automatically while you work on site.', icon: 'gear', grad: 'from-slate-600 to-slate-800', tint: 'bg-slate-200 text-slate-700', img: U('photo-1497366216548-37526070297c'), target: 'ai' },
 ]
@@ -152,7 +152,7 @@ function SiteFooter({ go, openIndustry }: { go: (v: View) => void; openIndustry:
   return <footer className="bg-[#0a1a33] px-4 py-10 text-slate-300">
     <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
       <div><p className="text-lg font-black text-white">NiketDigital<span className="text-orange-500">.ai</span></p><p className="mt-2 text-sm text-slate-400">Your AI-Powered Business Growth Partner.</p><p className="mt-2 text-sm text-slate-400">Websites, AI marketing, Meta &amp; Google Ads drafts, and a lead CRM — built for US roofing, remodeling, construction and pest control businesses.</p><p className="mt-3 text-sm text-slate-400">Vadodara, Gujarat, India</p><p className="mt-1 text-sm"><a className="text-slate-300 hover:text-white" href="mailto:niketdigital@gmail.com">niketdigital@gmail.com</a></p><p className="mt-1 text-sm"><a className="text-slate-300 hover:text-white" href="https://wa.me/918141402701" target="_blank" rel="noreferrer">WhatsApp: +91 81414 02701</a></p></div>
-      <div><p className="font-bold text-white">Company</p><div className="mt-2"><button className={link} onClick={() => go('landing')}>Home</button><button className={link} onClick={() => go('about')}>About Us</button><button className={link} onClick={() => go('contact')}>Contact Us</button><button className={link} onClick={() => go('auth')}>Sign in</button><button className={link} onClick={() => go('auth')}>Start free trial</button></div></div>
+      <div><p className="font-bold text-white">Company</p><div className="mt-2"><button className={link} onClick={() => go('landing')}>Home</button><button className={link} onClick={() => go('about')}>About Us</button><button className={link} onClick={() => go('contact')}>Contact Us</button><button className={link} onClick={() => go('auth')}>Sign in</button><button className={link} onClick={() => go('auth')}>Get started</button></div></div>
       <div><p className="font-bold text-white">Industries</p><div className="mt-2">{INDUSTRIES.map(i => <button key={i} className={link} onClick={() => openIndustry(i)}>{i}</button>)}</div><p className="mt-4 font-bold text-white">Services</p><div className="mt-2">{ALL_SERVICES.slice(0, 5).map(sv => <button key={sv.title} className={link} onClick={() => go('landing')}>{sv.title}</button>)}</div></div>
       <div><p className="font-bold text-white">Legal</p><div className="mt-2"><button className={link} onClick={() => go('privacy')}>Privacy Policy</button><button className={link} onClick={() => go('terms')}>Terms of Service</button><button className={link} onClick={() => go('billing')}>Pricing — from $49/mo</button></div><p className="mt-4 text-sm text-slate-400">Questions? Sign in and raise a ticket in the Support Center inside the app.</p></div>
     </div>
@@ -221,7 +221,7 @@ export default function App() {
             <button onClick={() => goSection('pricing')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Pricing</button>
             <button onClick={() => setView('contact')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Contact Us</button>
           </nav>
-          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Get started</Btn></div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 pb-16">
@@ -270,7 +270,7 @@ export default function App() {
         </section>
         <section className="mt-10 grid gap-4 lg:grid-cols-2">
           <div className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-200"><div className="flex h-36 items-center justify-center gap-3 bg-gradient-to-br from-[#0a1a33] via-[#0f2447] to-[#274e96] text-white"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-2xl font-black">N</span><span><span className="block text-2xl font-black">NiketDigital<span className="text-orange-400">.ai</span></span><span className="text-sm text-slate-300">Your AI-Powered Business Growth Partner</span></span></div><div className="p-6"><h2 className="text-xl font-black text-[#0f2447]">About NiketDigital.ai</h2><p className="mt-2 text-sm leading-relaxed text-slate-600">NiketDigital.ai is an AI-powered growth platform built for US roofing, remodeling, construction and pest control businesses. It brings together a professional AI-built website, an AI marketing assistant, Meta and Google Ads drafts, and a lead CRM — so a busy contractor can get more enquiries, follow up faster, and grow without needing technical knowledge or a marketing team.</p><p className="mt-2 text-sm leading-relaxed text-slate-600">Everything is designed for non-technical owners: sign up, tell us about your business, and start with a website order or your first AI-generated ad copy. Campaigns are always created as drafts, paused by default, and nothing is published or charged without your explicit approval.</p><button onClick={() => setView('about')} className="mt-3 text-sm font-bold text-orange-600 hover:text-orange-500">Read more about us →</button></div></div>
-          <div className="rounded-3xl bg-gradient-to-br from-orange-500 to-amber-500 p-6 text-white shadow-md"><h2 className="text-xl font-black">Why contractors choose us</h2><ul className="mt-4 space-y-3 text-sm">{['One platform for website, marketing, ads and leads.', 'AI does the writing — you approve everything before it goes live.', 'Real numbers only — reports come from your saved leads and connected accounts.', 'No card charged without your approval. Ads stay paused until you say yes.'].map(t => <li key={t} className="flex gap-2"><Icon d={ICONS.check} cls="mt-0.5 h-5 w-5 shrink-0" />{t}</li>)}</ul><div className="mt-5"><Btn onClick={() => setView('auth')}>Start free trial</Btn></div></div>
+          <div className="rounded-3xl bg-gradient-to-br from-orange-500 to-amber-500 p-6 text-white shadow-md"><h2 className="text-xl font-black">Why contractors choose us</h2><ul className="mt-4 space-y-3 text-sm">{['One platform for website, marketing, ads and leads.', 'AI does the writing — you approve everything before it goes live.', 'Real numbers only — reports come from your saved leads and connected accounts.', 'No card charged without your approval. Ads stay paused until you say yes.'].map(t => <li key={t} className="flex gap-2"><Icon d={ICONS.check} cls="mt-0.5 h-5 w-5 shrink-0" />{t}</li>)}</ul><div className="mt-5"><Btn onClick={() => setView('auth')}>Get started</Btn></div></div>
         </section>
         <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">What contractors say</h2><p className="mt-1 text-center text-sm text-slate-500">Sample reviews — real customer quotes will be added here.</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -321,7 +321,7 @@ export default function App() {
             <button onClick={() => goSection('pricing')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Pricing</button>
             <button onClick={() => setView('contact')} className="rounded-full px-3 py-1.5 transition hover:bg-orange-100 hover:text-orange-700">Contact Us</button>
           </nav>
-          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Get started</Btn></div>
         </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 pb-16">
@@ -337,13 +337,13 @@ export default function App() {
           </div>}
           {view === 'privacy' && <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
             <p><strong>What we collect.</strong> When you create an account we store your email address and password (handled securely by Supabase Auth). When you complete onboarding we store your business profile — business name, industry, contact details, services and service locations. When you use the platform we store the leads, website orders and support tickets you create.</p>
-            <p><strong>Connected accounts.</strong> If you choose to connect Meta, Google Ads or Stripe, we store only the connection details needed to work with those services, using official OAuth. We never ask for, and never store, your Meta or Google account password. Card details are handled by Stripe on its secure pages — this app never sees or stores raw card numbers.</p>
+            <p><strong>Connected accounts.</strong> If you choose to connect Meta or Google Ads, we store only the connection details needed to work with those services, using official OAuth. We never ask for, and never store, your Meta or Google account password. Payments are handled by PayPal or Razorpay on their secure pages — this app never sees or stores raw card numbers.</p>
             <p><strong>How we use it.</strong> Your data is used only to run your account, show your dashboard, generate the marketing content you ask for, and reply to support tickets. Your business data is yours — other customers cannot see it.</p>
             <p><strong>Your choices.</strong> You can update your business profile at any time, export your leads as a CSV from the CRM, and ask us to close your account through the Support Center. If you have questions about this policy, raise a ticket in the Support Center after signing in.</p>
             <p className="text-xs text-slate-500">Last updated: November 2026.</p>
           </div>}
           {view === 'terms' && <div className="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
-            <p><strong>Plans and billing.</strong> Subscriptions are Starter $49/month, Growth $99/month, Professional $199/month, Agency $399/month, billed monthly or annually through Stripe. Annual billing uses the lower monthly rate shown on the pricing page. You can upgrade, downgrade or cancel at any time; changes take effect as Stripe confirms them.</p>
+            <p><strong>Plans and billing.</strong> Subscriptions are Starter $59/month, Growth $149/month, Professional $249/month, Agency $499/month, billed monthly or annually through PayPal or Razorpay. Annual billing uses the lower monthly rate shown on the pricing page. You can upgrade, downgrade or cancel at any time; changes take effect as your payment gateway confirms them.</p>
             <p><strong>Website development is priced separately.</strong> Ordering a website starts with a quotation — nothing is charged for a website until you approve the quotation. Website order statuses run from New Order to Published.</p>
             <p><strong>Advertising.</strong> Meta and Google campaigns are created as drafts, paused by default. Nothing is published, and no advertising budget is changed, without your explicit confirmation. Advertising budgets are billed separately by Meta and Google, not by NiketDigital.ai.</p>
             <p><strong>No charge without authorisation.</strong> We never charge your card without your approval. You are responsible for keeping your account details safe and for the accuracy of the business information and leads you enter.</p>
@@ -369,7 +369,7 @@ export default function App() {
             </form>
             {contactSent && <p className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{contactSent}</p>}
           </div>}
-          <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('landing')}>Back to home</Btn><Btn variant="outline" onClick={() => setView('auth')}>Start free trial</Btn></div>
+          <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('landing')}>Back to home</Btn><Btn variant="outline" onClick={() => setView('auth')}>Get started</Btn></div>
         </div>
       </main>
       <SiteFooter go={(v) => setView(v)} openIndustry={openIndustry} />
@@ -386,7 +386,7 @@ export default function App() {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <button onClick={() => setView('landing')} className="flex items-center gap-2 text-left"><span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#0f2447] to-[#274e96] text-lg font-black text-orange-400">N</span><span><span className="block text-xl font-black leading-none text-[#0f2447]">NiketDigital<span className="text-orange-500">.ai</span></span><span className="text-[11px] text-slate-500">Your AI-Powered Business Growth Partner</span></span></button>
           <nav className="flex flex-wrap gap-1 text-sm font-medium text-slate-600">{INDUSTRIES.map(i => <button key={i} onClick={() => openIndustry(i)} className={`rounded-full px-3 py-1 transition ${i === industry ? 'bg-[#0f2447] font-bold text-white' : 'bg-slate-100 hover:bg-orange-100 hover:text-orange-700'}`}>{INDUSTRY_DETAILS[i].short}</button>)}</nav>
-          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+          <div className="flex gap-2"><Btn variant="outline" onClick={() => setView('auth')}>Sign in</Btn><Btn onClick={() => setView('auth')}>Get started</Btn></div>
         </div>
       </header>
       <main className="mx-auto max-w-6xl px-4 pb-16">
@@ -399,7 +399,7 @@ export default function App() {
               <h1 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">{d.short} growth, powered by AI.</h1>
               <p className="mt-2 text-lg font-bold text-orange-300">{d.tagline}</p>
               <p className="mt-3 max-w-xl text-slate-200">{d.blurb}</p>
-              <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('landing')}>See all industries</Btn></div>
+              <div className="mt-6 flex flex-wrap gap-3"><Btn onClick={() => setView('auth')}>Get started</Btn><Btn variant="outline" onClick={() => setView('landing')}>See all industries</Btn></div>
             </div>
             <div className="rounded-2xl bg-white p-5 text-slate-800 shadow-2xl">
               <div className="flex items-center justify-between"><p className="font-bold text-[#0f2447]">Your {d.short.toLowerCase()} website — preview</p><span className="flex gap-1"><span className="h-2.5 w-2.5 rounded-full bg-red-400" /><span className="h-2.5 w-2.5 rounded-full bg-amber-400" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /></span></div>
@@ -415,7 +415,7 @@ export default function App() {
             {d.services.map(([name, desc], idx) => (
               <div key={name} className={`rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${idx === 0 ? 'sm:col-span-2 lg:col-span-1 ring-2 ring-orange-200' : ''}`}><span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100 text-orange-600"><Icon d={ICONS[d.icon as keyof typeof ICONS]} cls="h-5 w-5" /></span><h3 className="mt-3 font-bold text-[#0f2447]">{name}</h3><p className="mt-1 text-sm leading-relaxed text-slate-600">{desc}</p></div>
             ))}
-            <div className="flex flex-col justify-center rounded-2xl bg-gradient-to-br from-[#0f2447] to-[#274e96] p-5 text-white shadow-md"><p className="text-lg font-black">Plus your other services</p><p className="mt-1 text-sm text-slate-300">Tell us what you offer in onboarding — every service can be added as a page on your website.</p><Btn onClick={() => setView('auth')}>Start free trial</Btn></div>
+            <div className="flex flex-col justify-center rounded-2xl bg-gradient-to-br from-[#0f2447] to-[#274e96] p-5 text-white shadow-md"><p className="text-lg font-black">Plus your other services</p><p className="mt-1 text-sm text-slate-300">Tell us what you offer in onboarding — every service can be added as a page on your website.</p><Btn onClick={() => setView('auth')}>Get started</Btn></div>
           </div>
         </section>
         <section className="mt-10"><h2 className="text-center text-2xl font-black text-[#0f2447]">What you get with NiketDigital.ai</h2><p className="mt-1 text-center text-sm text-slate-500">Built for {d.short.toLowerCase()} businesses — not a generic template.</p>
@@ -425,7 +425,7 @@ export default function App() {
             ))}
           </div>
         </section>
-        <section className="mt-10 rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200 sm:p-8"><h2 className="text-2xl font-black text-[#0f2447]">Ready to grow your {d.short.toLowerCase()} business?</h2><p className="mx-auto mt-2 max-w-xl text-sm text-slate-600">Plans from $49/mo — Starter $49, Growth $99, Professional $199, Agency $399. Website development is priced separately from the monthly subscription, and ad budgets are billed separately by Meta / Google.</p><div className="mt-5 flex flex-wrap justify-center gap-3"><Btn onClick={() => setView('auth')}>Start free trial</Btn><Btn variant="outline" onClick={() => setView('landing')}>Back to home</Btn></div></section>
+        <section className="mt-10 rounded-3xl bg-white p-6 text-center shadow-sm ring-1 ring-slate-200 sm:p-8"><h2 className="text-2xl font-black text-[#0f2447]">Ready to grow your {d.short.toLowerCase()} business?</h2><p className="mx-auto mt-2 max-w-xl text-sm text-slate-600">Plans from $59/mo — Starter $59, Growth $149, Professional $249, Agency $499. Website development is priced separately from the monthly subscription, and ad budgets are billed separately by Meta / Google.</p><div className="mt-5 flex flex-wrap justify-center gap-3"><Btn onClick={() => setView('auth')}>Get started</Btn><Btn variant="outline" onClick={() => setView('landing')}>Back to home</Btn></div></section>
       </main>
       <SiteFooter go={(v) => setView(v)} openIndustry={openIndustry} />
     </div>
@@ -457,8 +457,8 @@ export default function App() {
   if (view === 'campaigns') return shell('Campaign Management', 'Campaign drafts live here. Nothing is published or spends budget without your explicit approval.', <Campaigns api={api} />)
   if (view === 'crm') return shell('Lead Management CRM', 'Capture leads, track status, follow up, and export. Lead statuses: New → Contacted → Qualified → Estimate Scheduled → Proposal Sent → Won / Lost.', <Crm leads={leads} setLeads={setLeads} user={user} />)
   if (view === 'analytics') return shell('Analytics & Reporting', 'Reports are calculated only from your saved leads and from connected ad accounts. No invented metrics are shown.', <Card title="Your numbers" sub="Add leads and connect an ad account to see reporting here."><Empty text="No analytics yet — add leads in the CRM or connect Meta / Google Ads to see real performance here." /></Card>)
-  if (view === 'billing') return shell('Subscription & Billing', 'Monthly or annual billing via Stripe. Website development and ad budgets are billed separately. You are never charged without authorisation.', <Billing annual={billingAnnual} setAnnual={setBillingAnnual} selected={selectedPlan} setSelected={setSelectedPlan} api={api} />)
-  if (view === 'integrations') return shell('Integrations', 'Connect the tools you use. A connection is only shown as connected after a successful live OAuth check.', <><IntegrationPanel provider="Meta" statusPath="/api/meta/status" connectPath="/api/auth/meta/start" api={api} /><IntegrationPanel provider="Google Ads" statusPath="/api/google-ads/status" connectPath="/api/auth/google/start" api={api} /><Card title="Stripe" sub="Payments"><Empty text="Stripe is not connected until Stripe keys and webhook are configured on the server. See README.md." /></Card></>)
+  if (view === 'billing') return shell('Subscription & Billing', 'Monthly or annual billing via PayPal or Razorpay. Website development and ad budgets are billed separately. You are never charged without authorisation.', <Billing annual={billingAnnual} setAnnual={setBillingAnnual} selected={selectedPlan} setSelected={setSelectedPlan} api={api} />)
+  if (view === 'integrations') return shell('Integrations', 'Connect the tools you use. A connection is only shown as connected after a successful live OAuth check.', <><IntegrationPanel provider="Meta" statusPath="/api/meta/status" connectPath="/api/auth/meta/start" api={api} /><IntegrationPanel provider="Google Ads" statusPath="/api/google-ads/status" connectPath="/api/auth/google/start" api={api} /><GatewayCard name="PayPal" statusPath="/api/paypal/status" api={api} hint="PayPal charges subscriptions in USD at the price shown. Set the 8 billing-plan IDs in Vercel (PAYPAL_PLAN_*), add the webhook in the PayPal Dashboard, and redeploy." /><GatewayCard name="Razorpay" statusPath="/api/razorpay/status" api={api} hint="Razorpay charges subscriptions in INR (UPI, cards, netbanking) at the price set in your Razorpay plan. Set the 8 plan IDs in Vercel (RAZORPAY_PLAN_*), add the webhook in the Razorpay Dashboard, and redeploy." /></>)
   if (view === 'support') return shell('Support Center', 'Raise a ticket and the NiketDigital team will reply by email.', <Support user={user} />)
   if (view === 'admin') return shell('Admin Dashboard', 'Super-admin only. This view checks profiles.is_admin on the server — do not rely on this frontend label alone.', <Admin api={api} />)
   return shell('Dashboard', '', <Empty text="Choose a section from the menu." />)
@@ -511,6 +511,17 @@ function OrdersList({ orders }: { orders: Order[] }) {
 
 function WebsiteOrder({ business, onSubmitted }: { business: Business; onSubmitted: (o: Order) => void }) {
   const [style, setStyle] = useState(DESIGN_STYLES[0]); const [pages, setPages] = useState<string[]>(['Home', 'Services', 'Contact Us']); const [features, setFeatures] = useState(''); const [contact, setContact] = useState(''); const [preview, setPreview] = useState(false); const [err, setErr] = useState('')
+  const SAMPLE_URL = 'https://muse.ai/s/sample-roofing-website-xlr6xzxrfxyfwfxl/Tjbt6RFq4UhV5neVNXfifT4UJd8vA1VPReh2Rs2CBG8'
+  function openSample() {
+    const q = new URLSearchParams()
+    if (business.business_name) q.set('business', business.business_name)
+    const city = (business.service_locations || '').split(',')[0]?.trim(); if (city) q.set('city', city)
+    if (business.phone) q.set('phone', business.phone)
+    if (business.business_email) q.set('email', business.business_email)
+    if (business.services) q.set('services', business.services)
+    window.open(`${SAMPLE_URL}?${q.toString()}`, '_blank')
+  }
+  function togglePreview() { if (!preview) openSample(); setPreview(!preview) }
   async function submit() { setErr('')
     const { data } = await supabase.auth.getSession()
     const r = await fetch('/api/website-orders', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${data.session?.access_token || ''}` }, body: JSON.stringify({ business_name: business.business_name, industry: business.industry, design_style: style, pages, services: business.services, service_locations: business.service_locations, contact_info: contact, additional_features: features }) })
@@ -523,8 +534,8 @@ function WebsiteOrder({ business, onSubmitted }: { business: Business; onSubmitt
     <Input label="Contact information for the site" value={contact} onChange={setContact} placeholder="Phone, email, address" /></div>
     <fieldset className="mt-4"><legend className="text-sm font-semibold">Pages required</legend><div className="mt-2 flex flex-wrap gap-2">{WEBSITE_PAGES.map(p => <button type="button" key={p} onClick={() => setPages(pages.includes(p) ? pages.filter(x => x !== p) : [...pages, p])} className={`rounded-full border px-3 py-1 text-xs font-semibold ${pages.includes(p) ? 'bg-[#0f2447] text-white' : 'bg-white'}`}>{p}</button>)}</div></fieldset>
     <div className="mt-3"><Input label="Additional features / custom requests" value={features} onChange={setFeatures} placeholder="e.g. online estimate form, photo gallery, service-area map" /></div>
-    <div className="mt-4 flex flex-wrap gap-2"><Btn variant="outline" onClick={() => setPreview(!preview)}>{preview ? 'Hide preview concept' : 'Preview design concept'}</Btn><Btn onClick={submit}>Submit website order</Btn></div>
-    {preview && <div className="mt-4 rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-5"><p className="font-bold text-[#0f2447]">{business.business_name || 'Your Business'} — {style}</p><p className="text-sm text-slate-600">Pages: {pages.join(', ') || 'None selected yet.'}</p><p className="mt-2 text-xs text-slate-500">This is a design concept preview only — the finished website is built after your quotation is approved. No fake live site is shown.</p></div>}
+    <div className="mt-4 flex flex-wrap gap-2"><Btn variant="outline" onClick={togglePreview}>{preview ? 'Hide preview concept' : 'Preview design concept'}</Btn><Btn onClick={submit}>Submit website order</Btn></div>
+    {preview && <div className="mt-4 rounded-xl border-2 border-dashed border-orange-300 bg-orange-50 p-5"><p className="font-bold text-[#0f2447]">{business.business_name || 'Your Business'} — {style}</p><p className="text-sm text-slate-600">Pages: {pages.join(', ') || 'None selected yet.'}</p><p className="mt-2 text-sm text-slate-600">A live sample website with your business name has opened in a new tab — that is what your finished website will look like. Your website is delivered in 6 to 10 days after your order.</p><p className="mt-2 text-xs text-slate-500">This is a sample preview only — the finished website is built after your quotation is approved. No fake live site is shown.</p></div>}
     {err && <p className="mt-3 text-sm text-red-600">{err}</p>}
   </Card>
 }
@@ -556,6 +567,12 @@ function AiAssistant({ api, business }: { api: (p: string, b?: unknown) => Promi
     {vars.length > 0 && <div className="mt-4 space-y-3">{vars.map((v, i) => <div key={i} className="rounded-xl border border-slate-200 bg-slate-50 p-4"><p className="text-sm font-bold text-[#0f2447]">{i + 1}. {v.angle || 'Ad variation'}</p>{v.primaryText && <p className="mt-2 text-sm text-slate-700">{v.primaryText}</p>}{v.headline && <p className="mt-2 text-sm"><strong>Headline:</strong> {v.headline}</p>}{v.description && <p className="mt-1 text-sm text-slate-600">{v.description}</p>}{v.callToAction && <p className="mt-1 text-sm"><strong>Button:</strong> {v.callToAction}</p>}<div className="mt-3"><Btn variant="outline" onClick={() => copyVar(i, v)}>{copied === i ? 'Copied!' : 'Copy this ad'}</Btn></div></div>)}</div>}
     {out && <pre className="mt-4 max-h-96 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-900 p-4 text-xs text-slate-100">{out}</pre>}
   </Card>
+}
+
+function GatewayCard({ name, statusPath, api, hint }: { name: string; statusPath: string; api: (p: string, b?: unknown) => Promise<any>; hint: string }) {
+  const [status, setStatus] = useState('Checking…')
+  useEffect(() => { api(statusPath, {}).then(j => setStatus(j.configured ? `Configured on the server${j.mode ? ` (${j.mode})` : ''} — ${j.plansConfigured ?? 0} of 8 prices set` : `Not configured — ${j.error || 'add the keys in Vercel, then redeploy.'}`)).catch(() => setStatus('Not configured — status check failed.')) }, [statusPath])
+  return <Card title={`${name} — payments`} sub="Subscription payments"><p className="text-sm"><strong>Status:</strong> {status}</p><p className="mt-3 text-xs text-slate-500">{hint}</p></Card>
 }
 
 function IntegrationPanel({ provider, statusPath, connectPath, api }: { provider: string; statusPath: string; connectPath: string; api: (p: string, b?: unknown) => Promise<any> }) {
@@ -649,11 +666,18 @@ function Crm({ leads, setLeads, user }: { leads: Lead[]; setLeads: (l: Lead[]) =
 
 function Billing({ annual, setAnnual, selected, setSelected, api }: { annual: boolean; setAnnual: (b: boolean) => void; selected: string; setSelected: (s: string) => void; api: (p: string, b?: unknown) => Promise<any> }) {
   const [out, setOut] = useState('')
-  return <><Card title="Choose your plan" sub="Annual billing is two months free (annual monthly rate shown). Upgrade, downgrade or cancel any time — changes take effect as Stripe confirms them."><div className="flex gap-2"><Btn variant={annual ? 'primary' : 'outline'} onClick={() => setAnnual(true)}>Annual</Btn><Btn variant={!annual ? 'primary' : 'outline'} onClick={() => setAnnual(false)}>Monthly</Btn></div>
+  async function checkout(gateway: 'paypal' | 'razorpay') {
+    setOut('')
+    const j = await api(`/api/${gateway}/checkout`, { plan: selected, interval: annual ? 'annual' : 'monthly' })
+    if (j.error) { setOut(`Error: ${j.error}`); return }
+    if (j.url) { setOut(gateway === 'paypal' ? 'PayPal checkout opened in a new tab — complete payment on PayPal\'s secure page.' : 'Razorpay checkout opened in a new tab — complete payment on Razorpay\'s secure page (UPI, card or netbanking).'); window.open(j.url, '_blank') }
+    else setOut(JSON.stringify(j))
+  }
+  return <><Card title="Choose your plan" sub="Annual billing is two months free (annual monthly rate shown). Upgrade, downgrade or cancel any time — changes take effect as your payment gateway confirms them."><div className="flex gap-2"><Btn variant={annual ? 'primary' : 'outline'} onClick={() => setAnnual(true)}>Annual</Btn><Btn variant={!annual ? 'primary' : 'outline'} onClick={() => setAnnual(false)}>Monthly</Btn></div>
     <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{PLANS.map(p => <div key={p.id} className={`rounded-2xl border-2 p-4 ${selected === p.id ? 'border-orange-500' : 'border-slate-200'}`}><h3 className="font-bold">{p.name}</h3><p className="text-2xl font-black">${annual ? p.annualMonthly : p.monthly}<span className="text-sm font-normal">/mo{annual ? ' (billed annually)' : ''}</span></p><p className="text-xs text-slate-500">{p.leads} · {p.ai}</p><button className="mt-3 w-full rounded-lg bg-[#0f2447] px-3 py-2 text-sm font-semibold text-white" onClick={() => setSelected(p.id)}>Select {p.name}</button></div>)}</div>
-    <div className="mt-4"><Btn onClick={async () => { const j = await api('/api/stripe-checkout', { plan: selected, interval: annual ? 'annual' : 'monthly' }); setOut(j.error ? `Error: ${j.error}` : j.url ? 'Checkout opened in a new tab — complete payment on Stripe\'s secure page.' : JSON.stringify(j)); if (j.url) window.open(j.url, '_blank') }}>Continue to secure Stripe checkout</Btn></div>
-    {out && <p className="mt-3 text-sm">{out}</p>}<p className="mt-3 text-xs text-slate-500">Stripe handles card details — this app never sees or stores raw card numbers. Failed payments trigger a Stripe notification; renewals are automatic until you cancel.</p></Card>
-  <Card title="Payment history" sub="Shown only after Stripe is connected and a payment exists."><Empty text="No payments yet." /></Card></>
+    <div className="mt-4 flex flex-wrap gap-2"><Btn onClick={() => checkout('paypal')}>Pay with PayPal</Btn><Btn variant="outline" onClick={() => checkout('razorpay')}>Pay with Razorpay</Btn></div>
+    {out && <p className="mt-3 text-sm">{out}</p>}<p className="mt-3 text-xs text-slate-500">PayPal charges in USD at the price shown. Razorpay charges in INR (UPI, cards, netbanking) at the price set in your Razorpay plan. PayPal and Razorpay handle card details on their secure pages — this app never sees or stores raw card numbers. Failed payments trigger a notification from your payment gateway; renewals are automatic until you cancel.</p></Card>
+  <Card title="Payment history" sub="Shown only after a payment gateway is connected and a payment exists."><Empty text="No payments yet." /></Card></>
 }
 
 function Support({ user }: { user: { id: string; email?: string } | null }) {
