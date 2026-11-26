@@ -131,7 +131,6 @@ export default async function handler(req: any, res: any) {
       form.append('model', model)
       form.append('size', size.api)
       form.append('n', '1')
-      form.append('response_format', 'b64_json')
       const r = await fetch(`${imageBase}/images/edits`, { method: 'POST', headers, body: form })
       if (!r.ok) { const t = await r.text(); throw new Error(`AI provider returned an error (${r.status}). ${t.slice(0, 300)}`) }
       const j: any = await r.json()
@@ -142,7 +141,7 @@ export default async function handler(req: any, res: any) {
     const r = await fetch(`${imageBase}/images/generations`, {
       method: 'POST',
       headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, prompt, size: size.api, n: 1, response_format: 'b64_json' }),
+      body: JSON.stringify({ model, prompt, size: size.api, n: 1 }),
     })
     if (!r.ok) { const t = await r.text(); throw new Error(`AI provider returned an error (${r.status}). ${t.slice(0, 300)}`) }
     const j: any = await r.json()
