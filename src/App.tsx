@@ -560,7 +560,7 @@ const CREATIVE_STYLES = [
   { id: 'before_after', label: 'Before & After Ads' }, { id: 'ecommerce', label: 'E-commerce Product Ads' },
   { id: 'local', label: 'Local Business Ads' }, { id: 'seasonal', label: 'Seasonal Promotional Ads' },
 ]
-type GenImage = { b64: string; sizeLabel: string; actualSize: string; prompt: string; revisedPrompt?: string | null }
+type GenImage = { b64: string; sizeLabel: string; actualSize: string; modelUsed?: string; prompt: string; revisedPrompt?: string | null }
 
 function CreativeStudio({ api, business }: { api: (p: string, b?: unknown) => Promise<any>; business: Business }) {
   const [businessName, setBusinessName] = useState(business.business_name || '')
@@ -614,7 +614,7 @@ function CreativeStudio({ api, business }: { api: (p: string, b?: unknown) => Pr
   async function onFile(e: React.ChangeEvent<HTMLInputElement>, kind: 'product' | 'logo') {
     const f = e.target.files?.[0]; if (!f) return
     try {
-      const url = await fileToDataUrl(f, kind === 'product' ? 1024 : 512, kind === 'product')
+      const url = await fileToDataUrl(f, kind === 'product' ? 1024 : 512, false) // PNG: DALL-E 2 photo edits require PNG input
       if (kind === 'product') setProductImage(url); else { setLogo(url); setShowLogo(true) }
       setErr('')
     } catch (ex: any) { setErr(ex?.message || 'Could not read that file.') }
@@ -695,7 +695,7 @@ function CreativeStudio({ api, business }: { api: (p: string, b?: unknown) => Pr
       </div>
     </Card>
     <div className="grid gap-4">
-      <Card title="Preview" sub={sel ? `${sel.sizeLabel} · generated at ${sel.actualSize}` : 'Your generated ad will appear here.'}>
+      <Card title="Preview" sub={sel ? `${sel.sizeLabel} · generated at ${sel.actualSize}${sel.modelUsed ? ` · ${sel.modelUsed}` : ''}` : 'Your generated ad will appear here.'}>
         {busy && <div className="space-y-3"><div className="h-72 animate-pulse rounded-2xl bg-gradient-to-br from-slate-200 via-orange-100 to-slate-200" /><div className="h-4 w-2/3 animate-pulse rounded bg-slate-200" /><p className="text-sm text-slate-500">✦ Generating {variations} image{variations > 1 ? 's' : ''}… AI image generation takes about 20–60 seconds. Please keep this tab open.</p></div>}
         {!busy && !sel && <div className="flex h-72 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 text-center"><span className="text-4xl">🖼️</span><p className="mt-2 max-w-xs text-sm text-slate-500">Fill in the settings on the left and click <strong>Generate AI Ad Image</strong> to create your first ad.</p></div>}
         {!busy && sel && <div>
