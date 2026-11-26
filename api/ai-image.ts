@@ -1,5 +1,12 @@
 // POST /api/ai-image — server-only AI ad-image generation (AI Ad Creative Studio).
-// Uses the OpenAI Images API (gpt-image-1) with the server-side key.
+// Uses the OpenAI Images API with the server-side key.
+// Model fallback: the primary model is IMAGE_MODEL || 'gpt-image-1'. Some
+// OpenAI keys cannot use gpt-image-1 yet (the provider answers "The model
+// 'gpt-image-1' does not exist" until the organization is verified), so when
+// the provider rejects the primary model as unknown, the endpoint retries
+// automatically with DALL-E 3 for plain generations and DALL-E 2 for photo
+// edits — both work on ordinary paid OpenAI keys. The response always says
+// which model actually made each image, so the UI never claims otherwise.
 // Rules: (1) caller must send a verified Supabase JWT; (2) business_id is
 // resolved server-side from that user — never trusted from the body;
 // (3) plan AI-generation limits are checked and counted (1 count per image);
@@ -7,9 +14,10 @@
 // If missing, return 503 — NEVER return a fake or stock image as generated;
 // (5) this endpoint NEVER publishes anything. It only returns generated images.
 // Sizes: the ad formats the app offers (1080x1080, 1080x1350, 1080x1920,
-// 1200x628) are mapped to the closest size gpt-image-1 supports
-// (1024x1024, 1024x1536, 1536x1024). The response always states the actual
-// size generated, so the UI never claims a size it did not produce.
+// 1200x628) are mapped to the closest size the model supports
+// (gpt-image-1: 1024x1024, 1024x1536, 1536x1024; DALL-E 3: 1024x1024,
+// 1024x1792, 1792x1024; DALL-E 2 edits: 1024x1024). The response always states
+// the actual size generated, so the UI never claims a size it did not produce.
 // Uploads: an uploaded product photo is sent to the Images Edits API so the
 // real product appears in the ad. A brand logo is NOT sent to the model
 // (image models cannot reproduce a logo faithfully) — the app overlays the
@@ -45,6 +53,12 @@ const SIZES: Record<string, { api: string; label: string }> = {
   story: { api: '1024x1536', label: 'Story / Reels 1080 × 1920' },
   landscape: { api: '1536x1024', label: 'Landscape 1200 × 628' },
 }
+const DALLE3_SIZES: Record<string, string> = {
+  square: '1024x1024',
+  portrait: '1024x1792',
+  story: '1024x1792',
+  landscape: '1792x1024',
+}
 
 function buildPrompt(b: any, platform: string, style: string, sizeLabel: string): string {
   const parts = [
@@ -62,12 +76,20 @@ function buildPrompt(b: any, platform: string, style: string, sizeLabel: string)
   return parts.join(' ')
 }
 
-function b64ToBlob(b64: string): Blob | null {
+function b64ToBlob(b64: string): { blob: Blob | null; filename: string } {
   try {
+    const m = String(b64).match(/^data:(image\/\w+);base64,/)
+    // A data URL states its own type; raw base64 (a previously generated
+    // image) is PNG. DALL-E 2 edits require PNG, so the app uploads PNG.
+    const mime = m ? m[1] : 'image/png'
     const clean = String(b64).replace(/^data:image\/\w+;base64,/, '')
-    if (!clean || clean.length > 6_000_000) return null
-    return new Blob([Buffer.from(clean, 'base64')], { type: 'image/jpeg' })
-  } catch { return null }
+    if (!clean || clean.length > 6_000_000) return { blob: null, filename: 'product.png' }
+    return { blob: new Blob([Buffer.from(clean, 'base64')], { type: mime }), filename: mime === 'image/png' ? 'product.png' : 'product.jpg' }
+  } catch { return { blob: null, filename: 'product.png' } }
+}
+
+function modelNotFound(message: string): boolean {
+  return /does not exist/i.test(message) || /model .* not (found|available)/i.test(message)
 }
 
 export default async function handler(req: any, res: any) {
@@ -116,38 +138,66 @@ export default async function handler(req: any, res: any) {
     }
   } catch { /* limit check failure must not block generation silently — continue */ }
 
-  async function generateOnce(): Promise<{ b64: string; revisedPrompt?: string }> {
-    const headers: Record<string, string> = { Authorization: `Bearer ${apiKey}` }
-    const inputImage = baseImageB64 || productImageB64
-    if (inputImage) {
-      const blob = b64ToBlob(inputImage)
-      if (!blob) throw new Error('The uploaded image could not be read. Try a smaller JPG or PNG (under 4 MB).')
-      const editPrompt = baseImageB64
-        ? (promptOverride || `Keep the product, people and layout of this ad exactly the same. Only change the background to: ${fields.background || 'a clean, bright, professional setting'}. Do not change any text. Photorealistic, advertising-grade.`)
-        : `Use the uploaded product photo as the hero product in this advertisement. Keep the product exactly as shown — same shape, color and details. ${prompt}`
-      const form = new FormData()
-      form.append('image', blob, 'product.jpg')
-      form.append('prompt', editPrompt)
-      form.append('model', model)
-      form.append('size', size.api)
-      form.append('n', '1')
-      const r = await fetch(`${imageBase}/images/edits`, { method: 'POST', headers, body: form })
-      if (!r.ok) { const t = await r.text(); throw new Error(`AI provider returned an error (${r.status}). ${t.slice(0, 300)}`) }
-      const j: any = await r.json()
-      const item = j?.data?.[0]
-      if (!item?.b64_json) throw new Error('AI provider returned no image.')
-      return { b64: item.b64_json, revisedPrompt: item.revised_prompt }
-    }
+  async function callGenerations(m: string, sizeApi: string): Promise<{ b64: string; revisedPrompt?: string }> {
+    // gpt-image-1 always returns base64 and rejects a response_format param;
+    // DALL-E models need response_format: 'b64_json' to return base64.
+    const payload: Record<string, unknown> = { model: m, prompt, size: sizeApi, n: 1 }
+    if (m !== 'gpt-image-1') payload.response_format = 'b64_json'
     const r = await fetch(`${imageBase}/images/generations`, {
       method: 'POST',
-      headers: { ...headers, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, prompt, size: size.api, n: 1 }),
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     })
     if (!r.ok) { const t = await r.text(); throw new Error(`AI provider returned an error (${r.status}). ${t.slice(0, 300)}`) }
     const j: any = await r.json()
     const item = j?.data?.[0]
     if (!item?.b64_json) throw new Error('AI provider returned no image.')
     return { b64: item.b64_json, revisedPrompt: item.revised_prompt }
+  }
+
+  async function callEdits(m: string, sizeApi: string, inputB64: string, editPrompt: string): Promise<{ b64: string; revisedPrompt?: string }> {
+    const { blob, filename } = b64ToBlob(inputB64)
+    if (!blob) throw new Error('The uploaded image could not be read. Try a smaller JPG or PNG (under 4 MB).')
+    const form = new FormData()
+    form.append('image', blob, filename)
+    form.append('prompt', editPrompt)
+    form.append('model', m)
+    form.append('size', sizeApi)
+    form.append('n', '1')
+    if (m !== 'gpt-image-1') form.append('response_format', 'b64_json')
+    const r = await fetch(`${imageBase}/images/edits`, { method: 'POST', headers: { Authorization: `Bearer ${apiKey}` }, body: form })
+    if (!r.ok) { const t = await r.text(); throw new Error(`AI provider returned an error (${r.status}). ${t.slice(0, 300)}`) }
+    const j: any = await r.json()
+    const item = j?.data?.[0]
+    if (!item?.b64_json) throw new Error('AI provider returned no image.')
+    return { b64: item.b64_json, revisedPrompt: item.revised_prompt }
+  }
+
+  async function generateOnce(): Promise<{ b64: string; revisedPrompt?: string; modelUsed: string; actualSize: string; fallbackNote?: string }> {
+    const inputImage = baseImageB64 || productImageB64
+    const editPrompt = baseImageB64
+      ? (promptOverride || `Keep the product, people and layout of this ad exactly the same. Only change the background to: ${fields.background || 'a clean, bright, professional setting'}. Do not change any text. Photorealistic, advertising-grade.`)
+      : `Use the uploaded product photo as the hero product in this advertisement. Keep the product exactly as shown — same shape, color and details. ${prompt}`
+    try {
+      if (inputImage) {
+        const r = await callEdits(model, size.api, inputImage, editPrompt)
+        return { ...r, modelUsed: model, actualSize: size.api }
+      }
+      const r = await callGenerations(model, size.api)
+      return { ...r, modelUsed: model, actualSize: size.api }
+    } catch (e: any) {
+      const msg = e?.message || ''
+      if (!modelNotFound(msg)) throw e
+      // Primary model is not available on this key — fall back automatically.
+      if (inputImage) {
+        if (model === 'dall-e-2') throw e
+        const r = await callEdits('dall-e-2', '1024x1024', inputImage, editPrompt)
+        return { ...r, modelUsed: 'dall-e-2', actualSize: '1024x1024', fallbackNote: `The model ${model} is not available on your OpenAI key, so this photo edit was made with DALL-E 2 at 1024 × 1024.` }
+      }
+      if (model === 'dall-e-3') throw e
+      const r = await callGenerations('dall-e-3', DALLE3_SIZES[sizeKey])
+      return { ...r, modelUsed: 'dall-e-3', actualSize: DALLE3_SIZES[sizeKey], fallbackNote: `The model ${model} is not available on your OpenAI key, so this image was made with DALL-E 3 instead. To use ${model}, verify your organization at platform.openai.com.` }
+    }
   }
 
   try {
@@ -158,13 +208,15 @@ export default async function handler(req: any, res: any) {
         await sb.from('ai_generations').insert({ business_id: business.id, user_id: user.id, kind: 'image', prompt_excerpt: prompt.slice(0, 200) })
       }
     } catch { /* counting failure is non-fatal */ }
+    const fallbackNote = results.find(r => r.fallbackNote)?.fallbackNote || ''
+    const first = results[0]
     return res.status(200).json({
-      model,
+      model: first.modelUsed,
       requestedSize: size.label,
-      actualSize: size.api,
+      actualSize: first.actualSize,
       prompt,
-      images: results.map((r) => ({ b64: r.b64, format: 'png', sizeLabel: size.label, actualSize: size.api, prompt, revisedPrompt: r.revisedPrompt || null })),
-      note: `Generated at ${size.api} (closest supported size to ${size.label}).`,
+      images: results.map((r) => ({ b64: r.b64, format: 'png', sizeLabel: size.label, actualSize: r.actualSize, modelUsed: r.modelUsed, prompt, revisedPrompt: r.revisedPrompt || null })),
+      note: `Generated at ${first.actualSize} (closest supported size to ${size.label}).${fallbackNote ? ` ${fallbackNote}` : ''}`,
     })
   } catch (e: any) {
     return res.status(502).json({ error: `Image generation failed: ${e?.message || 'unknown error'}` })
